@@ -191,6 +191,44 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .photo-result-grid p, .photo-result-grid a { color: var(--muted); font-size: 10px; }
 .photo-result-grid a { color: var(--gold); }
 
+.published-gallery { border-top: 1px solid var(--line); }
+.published-gallery h2, .admin-review h2 { margin: 0; font: 400 clamp(38px, 5vw, 72px)/1.1 Georgia, "Yu Mincho", serif; letter-spacing: -.035em; }
+.published-photo-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 50px 22px; }
+.published-photo-grid figure { grid-column: span 4; margin: 0; }
+.published-photo-grid figure:nth-child(5n + 1) { grid-column: span 7; }
+.published-photo-grid figure:nth-child(5n + 2) { grid-column: span 5; }
+.published-photo-grid img { display: block; width: 100%; aspect-ratio: 4/5; object-fit: cover; background: var(--panel); }
+.published-photo-grid figure:nth-child(5n + 1) img, .published-photo-grid figure:nth-child(5n + 2) img { aspect-ratio: 16/10; }
+.published-photo-grid figcaption { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; margin-top: 15px; align-items: baseline; }
+.published-photo-grid figcaption span, .published-photo-grid figcaption time { color: var(--muted); font-size: 8px; letter-spacing: .12em; }
+.published-photo-grid figcaption strong { font: 400 15px Georgia, "Yu Mincho", serif; }
+.published-photo-grid figcaption p { grid-column: 2 / -1; margin: 0; color: var(--muted); font-size: 10px; }
+
+.photo-admin-page { min-height: 100vh; }
+.admin-hero { min-height: 74vh; padding: 170px 8vw 90px; display: flex; flex-direction: column; justify-content: center; background: radial-gradient(circle at 78% 28%, rgba(191,167,118,.13), transparent 30%), #0a0a09; }
+.admin-hero h1 { margin: 24px 0; max-width: 950px; font: 400 clamp(48px, 7.5vw, 108px)/1.1 Georgia, "Yu Mincho", serif; letter-spacing: -.045em; }
+.admin-hero > p:not(.eyebrow, .admin-status) { max-width: 650px; color: var(--muted); line-height: 1.9; }
+.admin-status { margin: 20px 0 0; color: var(--gold); font-size: 11px; }
+.admin-review { border-top: 1px solid var(--line); }
+.admin-photo-list { display: grid; gap: 26px; }
+.admin-photo-list article { display: grid; grid-template-columns: 290px 1fr; gap: 32px; padding: 22px; border: 1px solid var(--line); opacity: .55; transition: opacity .25s, border-color .25s; }
+.admin-photo-list article.selected { opacity: 1; border-color: rgba(191,167,118,.55); }
+.admin-photo-list img { width: 100%; height: 260px; object-fit: cover; }
+.admin-photo-fields { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; align-content: start; }
+.admin-photo-fields label { color: var(--muted); font-size: 9px; letter-spacing: .1em; }
+.admin-photo-fields input:not([type="checkbox"]), .admin-photo-fields select, .publish-panel input {
+  display: block; width: 100%; margin-top: 8px; padding: 12px 13px; border: 1px solid var(--line); border-radius: 0; background: #151513; color: var(--ink); font: 12px "Helvetica Neue", sans-serif;
+}
+.admin-photo-fields .publish-check { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; color: var(--gold); }
+.admin-photo-fields p { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 9px; }
+.publish-panel { display: grid; grid-template-columns: 1fr minmax(260px, .65fr) auto; gap: 28px; align-items: end; margin-top: 55px; padding: 32px; background: var(--panel); border: 1px solid var(--line); }
+.publish-panel h3 { margin: 0 0 10px; font: 400 24px Georgia, "Yu Mincho", serif; }
+.publish-panel p { margin: 0; max-width: 620px; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.publish-panel a { display: inline-block; margin-top: 12px; color: var(--gold); font-size: 9px; }
+.publish-panel button { min-height: 42px; padding: 0 20px; border: 1px solid var(--gold); background: var(--gold); color: #090908; font-size: 10px; letter-spacing: .1em; cursor: pointer; }
+.publish-panel button:disabled { opacity: .35; cursor: not-allowed; }
+.publish-panel.safe-pack-panel { grid-template-columns: 1fr auto; }
+
 @media (max-width: 800px) {
   .site-header { padding: 22px 20px; }
   .site-header nav a:not(:last-child) { display: none; }
@@ -218,6 +256,12 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
   .japan-map { width: min(78%, 430px); }
   .visited-prefectures { width: 100%; }
   .photo-result-grid { grid-template-columns: 1fr; }
+  .published-photo-grid { grid-template-columns: 1fr; }
+  .published-photo-grid figure, .published-photo-grid figure:nth-child(n) { grid-column: 1; }
+  .published-photo-grid img, .published-photo-grid figure:nth-child(n) img { aspect-ratio: 4/3; }
+  .admin-photo-list article { grid-template-columns: 1fr; }
+  .admin-photo-list img { height: auto; max-height: 60vh; }
+  .publish-panel { grid-template-columns: 1fr; align-items: start; }
   .food-grid { gap: 40px; }
   .food-image { aspect-ratio: 4/3; }
   .best-grid div { border-right: 0; border-bottom: 1px solid var(--line); }
@@ -233,6 +277,7 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
   .map-coordinate { top: 34px; left: 32px; }
   .map-signature { right: 28px; bottom: 28px; }
   .japan-map { width: 82%; }
+  .admin-photo-fields { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

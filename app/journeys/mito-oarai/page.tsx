@@ -1,4 +1,5 @@
 import Link from "next/link";
+import JourneyGallery from "../../components/journey-gallery";
 
 const foods = [
   { shop: "浜っこ食堂 お魚天国", dish: "海鮮丼", price: "¥2,310", image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=86" },
@@ -125,6 +126,8 @@ export default function MitoOaraiPage() {
           <div><span>Best place</span><h3>海に立つ<br />神磯の鳥居</h3></div>
         </div>
       </section>
+
+      <JourneyGallery slug="mito-oarai" />
 
       <section className="travel-data section">
         <div>

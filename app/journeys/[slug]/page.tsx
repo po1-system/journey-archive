@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getJourney, journeys } from "../../data/journeys";
+import JourneyGallery from "../../components/journey-gallery";
 
 export function generateStaticParams() {
   return journeys.map(({ slug }) => ({ slug }));
@@ -67,6 +68,8 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       )}
+
+      <JourneyGallery slug={journey.slug} />
 
       <section className="travel-data section">
         <div>
