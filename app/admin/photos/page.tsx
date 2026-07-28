@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import * as exifr from "exifr";
 import JSZip from "jszip";
+import type { PhotoPlacement } from "../../components/journey-gallery";
 
 type Candidate = {
   id: string;
@@ -17,6 +18,7 @@ type Candidate = {
   longitude?: number;
   caption: string;
   selected: boolean;
+  placement: PhotoPlacement;
 };
 
 type ManifestPhoto = {
@@ -27,6 +29,7 @@ type ManifestPhoto = {
   takenAt?: string;
   src: string;
   caption?: string;
+  placement: PhotoPlacement;
 };
 
 const journeyOptions = [
@@ -41,20 +44,23 @@ const journeyOptions = [
 ];
 
 const knownPlaces = [
-  { journey: "kagawa", name: "父母ヶ浜", lat: 34.219, lon: 133.646 },
-  { journey: "fukuoka", name: "櫛田神社", lat: 33.593, lon: 130.410 },
-  { journey: "fukuoka", name: "中洲", lat: 33.593, lon: 130.406 },
-  { journey: "hiroshima", name: "厳島神社", lat: 34.296, lon: 132.319 },
-  { journey: "hiroshima", name: "平和記念公園", lat: 34.392, lon: 132.453 },
-  { journey: "okinawa", name: "アメリカンビレッジ", lat: 26.315, lon: 127.758 },
-  { journey: "okinawa", name: "国際通り", lat: 26.215, lon: 127.684 },
-  { journey: "wakayama", name: "白浜", lat: 33.681, lon: 135.348 },
-  { journey: "ishikawa", name: "金沢市内", lat: 36.561, lon: 136.656 },
-  { journey: "hakodate", name: "函館山", lat: 41.759, lon: 140.704 },
-  { journey: "hakodate", name: "五稜郭", lat: 41.796, lon: 140.756 },
-  { journey: "mito-oarai", name: "神磯の鳥居", lat: 36.316, lon: 140.589 },
-  { journey: "mito-oarai", name: "千波湖", lat: 36.365, lon: 140.455 },
-  { journey: "mito-oarai", name: "偕楽園", lat: 36.373, lon: 140.452 },
+  { journey: "kagawa", name: "父母ヶ浜", lat: 34.219, lon: 133.646, placement: "place" as PhotoPlacement },
+  { journey: "fukuoka", name: "櫛田神社", lat: 33.593, lon: 130.410, placement: "place" as PhotoPlacement },
+  { journey: "fukuoka", name: "中洲", lat: 33.593, lon: 130.406, placement: "place" as PhotoPlacement },
+  { journey: "fukuoka", name: "ラーメン海鳴", lat: 33.596, lon: 130.449, placement: "food" as PhotoPlacement },
+  { journey: "hiroshima", name: "厳島神社", lat: 34.296, lon: 132.319, placement: "place" as PhotoPlacement },
+  { journey: "hiroshima", name: "平和記念公園", lat: 34.392, lon: 132.453, placement: "place" as PhotoPlacement },
+  { journey: "hiroshima", name: "牡蠣屋", lat: 34.299, lon: 132.322, placement: "food" as PhotoPlacement },
+  { journey: "okinawa", name: "アメリカンビレッジ", lat: 26.315, lon: 127.758, placement: "place" as PhotoPlacement },
+  { journey: "okinawa", name: "国際通り", lat: 26.215, lon: 127.684, placement: "place" as PhotoPlacement },
+  { journey: "wakayama", name: "白浜", lat: 33.681, lon: 135.348, placement: "place" as PhotoPlacement },
+  { journey: "ishikawa", name: "金沢市内", lat: 36.561, lon: 136.656, placement: "place" as PhotoPlacement },
+  { journey: "hakodate", name: "函館山", lat: 41.759, lon: 140.704, placement: "place" as PhotoPlacement },
+  { journey: "hakodate", name: "五稜郭", lat: 41.796, lon: 140.756, placement: "place" as PhotoPlacement },
+  { journey: "mito-oarai", name: "神磯の鳥居", lat: 36.316, lon: 140.589, placement: "place" as PhotoPlacement },
+  { journey: "mito-oarai", name: "千波湖", lat: 36.365, lon: 140.455, placement: "place" as PhotoPlacement },
+  { journey: "mito-oarai", name: "偕楽園", lat: 36.373, lon: 140.452, placement: "place" as PhotoPlacement },
+  { journey: "mito-oarai", name: "らぁ麺ふじ田", lat: 36.367, lon: 140.475, placement: "food" as PhotoPlacement },
 ];
 
 function distanceKm(aLat: number, aLon: number, bLat: number, bLon: number) {
@@ -67,17 +73,21 @@ function distanceKm(aLat: number, aLon: number, bLat: number, bLon: number) {
 function classify(date?: Date, latitude?: number, longitude?: number) {
   const iso = date ? date.toISOString().slice(0, 10) : "";
   const journey = journeyOptions.find((item) => iso >= item.start && iso <= item.end);
-  if (!journey) return { journey: "", day: 1, place: "" };
+  if (!journey) return { journey: "", day: 1, place: "", placement: "gallery" as PhotoPlacement };
   const day = Math.max(1, Math.round((new Date(iso).getTime() - new Date(journey.start).getTime()) / 86400000) + 1);
   let place = "";
+  let placement: PhotoPlacement = "day";
   if (latitude != null && longitude != null) {
     const nearest = knownPlaces
       .filter((item) => item.journey === journey.slug)
       .map((item) => ({ ...item, distance: distanceKm(latitude, longitude, item.lat, item.lon) }))
       .sort((a, b) => a.distance - b.distance)[0];
-    if (nearest && nearest.distance < 12) place = nearest.name;
+    if (nearest && nearest.distance < 12) {
+      place = nearest.name;
+      placement = nearest.placement;
+    }
   }
-  return { journey: journey.slug, day, place };
+  return { journey: journey.slug, day, place, placement };
 }
 
 async function resizeToWebp(file: File) {
@@ -107,6 +117,9 @@ export default function PhotoPublisherPage() {
       const info = await exifr.parse(file, { gps: true, exif: true }).catch(() => undefined);
       const taken = info?.DateTimeOriginal instanceof Date ? info.DateTimeOriginal : undefined;
       const result = classify(taken, info?.latitude, info?.longitude);
+      const bitmap = await createImageBitmap(file).catch(() => undefined);
+      const landscape = bitmap ? bitmap.width / bitmap.height >= 1.35 : false;
+      bitmap?.close();
       return {
         id: `${Date.now()}-${index}`,
         file,
@@ -119,9 +132,19 @@ export default function PhotoPublisherPage() {
         longitude: info?.longitude,
         caption: "",
         selected: Boolean(result.journey),
+        placement: result.placement,
+        landscape,
       };
     }));
-    setPhotos(candidates);
+    const heroAssigned = new Set<string>();
+    const suggested = candidates.map((photo) => {
+      if (photo.journey && photo.landscape && !heroAssigned.has(photo.journey)) {
+        heroAssigned.add(photo.journey);
+        return { ...photo, placement: "hero" as PhotoPlacement };
+      }
+      return photo;
+    });
+    setPhotos(suggested);
     setStatus(`${candidates.length}枚を解析しました。分類結果を確認してください。`);
     setBusy(false);
   }
@@ -153,6 +176,7 @@ export default function PhotoPublisherPage() {
           takenAt: photo.takenAt || undefined,
           src: `/photos/${photo.journey}/${safeId}.webp`,
           caption: photo.caption || undefined,
+          placement: photo.placement,
         });
       }
       zip.file("manifest.json", JSON.stringify(additions, null, 2));
@@ -180,7 +204,7 @@ export default function PhotoPublisherPage() {
       <section className="admin-hero">
         <p className="eyebrow">Private Photo Publisher</p>
         <h1>写真を、<br />旅のページへ。</h1>
-        <p>撮影日とGPSを読み取り、旅行・日程・場所を自動分類します。確認した写真だけを公開できます。</p>
+        <p>撮影日・GPS・写真の向きを読み取り、旅行・日程・場所・掲載セクションを自動提案します。確認した写真だけを公開できます。</p>
         <label className="upload-button">写真を選ぶ
           <input type="file" accept="image/jpeg,image/png,image/heic,image/heif,image/tiff" multiple onChange={(event) => inspect(event.target.files)} />
         </label>
@@ -210,6 +234,16 @@ export default function PhotoPublisherPage() {
                   <label>日程
                     <select value={photo.day} onChange={(event) => update(photo.id, { day: Number(event.target.value) })}>
                       {[1, 2, 3].map((day) => <option value={day} key={day}>Day {day}</option>)}
+                    </select>
+                  </label>
+                  <label>配置先
+                    <select value={photo.placement} onChange={(event) => update(photo.id, { placement: event.target.value as PhotoPlacement })}>
+                      <option value="hero">Hero｜ページ表紙</option>
+                      <option value="day">Day｜日ごとの記録</option>
+                      <option value="food">Food｜食べたもの</option>
+                      <option value="place">Place｜訪れた場所</option>
+                      <option value="best">Best Shot｜旅の一枚</option>
+                      <option value="gallery">Gallery｜写真一覧</option>
                     </select>
                   </label>
                   <label>撮影場所<input value={photo.place} onChange={(event) => update(photo.id, { place: event.target.value })} placeholder="例：神磯の鳥居" /></label>

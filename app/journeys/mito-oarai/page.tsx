@@ -1,5 +1,5 @@
 import Link from "next/link";
-import JourneyGallery from "../../components/journey-gallery";
+import JourneyGallery, { getJourneyHero } from "../../components/journey-gallery";
 
 const foods = [
   { shop: "浜っこ食堂 お魚天国", dish: "海鮮丼", price: "¥2,310", image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=86" },
@@ -8,6 +8,8 @@ const foods = [
 ];
 
 export default function MitoOaraiPage() {
+  const heroPhoto = getJourneyHero("mito-oarai");
+  const heroBase = process.env.GITHUB_ACTIONS === "true" ? "/journey-archive" : "";
   return (
     <main className="story-page">
       <header className="site-header story-header">
@@ -16,7 +18,7 @@ export default function MitoOaraiPage() {
       </header>
 
       <section className="story-hero">
-        <div className="story-hero-image" />
+        <div className="story-hero-image" style={heroPhoto ? { backgroundImage: `url("${heroBase}${heroPhoto.src}")` } : undefined} />
         <div className="hero-shade" />
         <div className="story-hero-content">
           <p className="eyebrow">Journey 08 · Ibaraki</p>
@@ -24,6 +26,9 @@ export default function MitoOaraiPage() {
           <p>2026.07.27 — 07.28 · 1泊2日</p>
         </div>
       </section>
+
+      <JourneyGallery slug="mito-oarai" placement="day" title="旅の時間" />
+      <JourneyGallery slug="mito-oarai" placement="place" title="訪れた場所" />
 
       <section className="story-lead section">
         <p className="section-index">SEA · HISTORY · FOOD</p>
@@ -127,7 +132,9 @@ export default function MitoOaraiPage() {
         </div>
       </section>
 
-      <JourneyGallery slug="mito-oarai" />
+      <JourneyGallery slug="mito-oarai" placement="food" title="食の記録" />
+      <JourneyGallery slug="mito-oarai" placement="best" title="旅の一枚" />
+      <JourneyGallery slug="mito-oarai" placement="gallery" />
 
       <section className="travel-data section">
         <div>

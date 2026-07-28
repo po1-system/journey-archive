@@ -1,6 +1,8 @@
 import photoManifest from "../data/photo-manifest.json";
 
-type PublishedPhoto = {
+export type PhotoPlacement = "hero" | "day" | "food" | "place" | "best" | "gallery";
+
+export type PublishedPhoto = {
   id: string;
   journey: string;
   day: number;
@@ -8,10 +10,17 @@ type PublishedPhoto = {
   takenAt?: string;
   src: string;
   caption?: string;
+  placement?: PhotoPlacement;
 };
 
-export default function JourneyGallery({ slug }: { slug: string }) {
-  const photos = (photoManifest as PublishedPhoto[]).filter((photo) => photo.journey === slug);
+export function getJourneyHero(slug: string) {
+  return (photoManifest as PublishedPhoto[]).find((photo) => photo.journey === slug && photo.placement === "hero");
+}
+
+export default function JourneyGallery({ slug, placement = "gallery", title }: { slug: string; placement?: PhotoPlacement; title?: string }) {
+  const photos = (photoManifest as PublishedPhoto[]).filter((photo) =>
+    photo.journey === slug && (photo.placement ?? "gallery") === placement
+  );
   const basePath = process.env.GITHUB_ACTIONS === "true" ? "/journey-archive" : "";
   if (photos.length === 0) return null;
 
@@ -19,8 +28,8 @@ export default function JourneyGallery({ slug }: { slug: string }) {
     <section className="published-gallery section">
       <div className="section-heading">
         <div>
-          <p className="section-index">PHOTO JOURNAL</p>
-          <h2>旅の写真</h2>
+          <p className="section-index">{placement === "best" ? "BEST SHOT" : "PHOTO JOURNAL"}</p>
+          <h2>{title ?? "旅の写真"}</h2>
         </div>
         <p>{photos.length} photographs</p>
       </div>
