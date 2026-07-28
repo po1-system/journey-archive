@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { journeys } from "./data/journeys";
+import ArchiveDashboard from "./components/archive-dashboard";
 
 const heroImages = [
   {
@@ -27,7 +28,8 @@ export default function Home() {
         <Link href="/" className="brand">Journey Archive</Link>
         <nav aria-label="メインナビゲーション">
           <a href="#journeys">Journeys</a>
-          <a href="#archive">Archive</a>
+          <a href="#explore">Explore</a>
+          <a href="#map">Map</a>
           <Link href="/journeys/mito-oarai">Featured</Link>
         </nav>
       </header>
@@ -91,13 +93,15 @@ export default function Home() {
         </Link>
       </section>
 
+      <ArchiveDashboard journeys={journeys} />
+
       <section className="archive section" id="archive">
         <div className="section-heading">
           <div>
             <p className="section-index">003 — JOURNEYS</p>
             <h2>旅の記録</h2>
           </div>
-          <p>7 journeys · 9 nights · 16 days</p>
+          <p>8 journeys · 10 nights · 18 days</p>
         </div>
         <div className="journey-list">
           {journeys.map((journey) => (

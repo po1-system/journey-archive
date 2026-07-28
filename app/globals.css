@@ -117,6 +117,66 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .archive-food-list h3 { margin: 16px 0 32px; font: 400 23px/1.5 Georgia, "Yu Mincho", serif; }
 .archive-note { padding-top: 45px; padding-bottom: 45px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; letter-spacing: .04em; }
 
+.archive-tools, .map-section, .rankings, .statistics, .exif-cta { border-top: 1px solid var(--line); }
+.archive-tools h2, .map-section h2, .rankings h2, .statistics h2, .exif-cta h2, .photo-results h2 {
+  margin: 0; font: 400 clamp(38px, 5vw, 72px)/1.1 Georgia, "Yu Mincho", serif; letter-spacing: -.035em;
+}
+.filter-bar { display: flex; gap: 16px; margin: 0 0 44px; }
+.filter-bar label { min-width: 190px; color: var(--muted); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }
+.filter-bar select { display: block; width: 100%; margin-top: 10px; padding: 13px 36px 13px 14px; border: 1px solid var(--line); border-radius: 0; background: var(--panel); color: var(--ink); font: inherit; appearance: auto; }
+.journey-card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.journey-card { display: block; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
+.journey-card-image { aspect-ratio: 4/5; background-size: cover; background-position: center; filter: saturate(.78); transition: filter .4s, transform .4s; }
+.journey-card:hover .journey-card-image { filter: saturate(1); transform: translateY(-5px); }
+.journey-card > div:last-child { padding-top: 18px; }
+.journey-card span, .journey-card p { color: var(--muted); font-size: 9px; letter-spacing: .09em; }
+.journey-card h3 { margin: 9px 0 5px; font: 400 27px Georgia, "Yu Mincho", serif; }
+.journey-card p { margin: 0; }
+
+.japan-map { position: relative; height: 640px; max-width: 1040px; margin: 20px auto 40px; }
+.japan-map::before { content: "JAPAN"; position: absolute; left: 44%; top: 42%; color: rgba(255,255,255,.025); font: 400 150px Georgia, serif; letter-spacing: .1em; transform: rotate(-17deg); }
+.prefecture { position: absolute; width: 54px; height: 42px; padding: 0; border: 1px solid rgba(255,255,255,.11); border-radius: 45% 40% 46% 38%; background: #161614; color: #706e68; cursor: default; transform: rotate(-6deg); transition: transform .25s, background .25s, color .25s; }
+.prefecture span { font-size: 8px; letter-spacing: .04em; white-space: nowrap; }
+.prefecture.visited { border-color: rgba(191,167,118,.75); background: linear-gradient(145deg, #bfa776, #74603b); color: #090908; cursor: pointer; box-shadow: 0 0 24px rgba(191,167,118,.18); }
+.prefecture.visited:hover { transform: rotate(-6deg) scale(1.14); z-index: 2; }
+.map-legend { display: flex; justify-content: center; gap: 26px; color: var(--muted); font-size: 10px; }
+.map-legend span { display: flex; align-items: center; gap: 8px; }
+.map-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: #252522; }
+.map-legend .visited-dot { background: var(--gold); }
+
+.ranking-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 7vw; }
+.ranking-label { margin: 0 0 18px; color: var(--gold); font-size: 9px; letter-spacing: .18em; }
+.ranking-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: center; min-height: 82px; border-top: 1px solid var(--line); }
+.ranking-row:last-child { border-bottom: 1px solid var(--line); }
+.ranking-row b { color: var(--gold); font: 400 11px Georgia, serif; }
+.ranking-row span { font: 400 18px/1.45 Georgia, "Yu Mincho", serif; }
+.ranking-row small { color: var(--muted); font-size: 9px; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.stat-grid article { min-height: 230px; padding: 28px 22px; border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
+.stat-grid article:last-child { border-right: 0; }
+.stat-grid span, .stat-grid small { color: var(--muted); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+.stat-grid strong { font: 400 clamp(34px, 4vw, 58px) Georgia, serif; }
+.privacy-note { margin: 24px 0 0; color: var(--muted); font-size: 10px; line-height: 1.8; }
+.exif-cta { display: flex; align-items: end; justify-content: space-between; gap: 50px; }
+.exif-cta > div > p:last-child { color: var(--muted); line-height: 1.8; }
+.exif-cta > a { flex: 0 0 auto; padding: 16px 22px; border: 1px solid var(--gold); color: var(--gold); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+
+.photo-map-page { min-height: 100vh; }
+.photo-map-hero { min-height: 78vh; padding: 180px 8vw 90px; display: flex; flex-direction: column; justify-content: center; background: radial-gradient(circle at 78% 28%, rgba(191,167,118,.13), transparent 30%), #0a0a09; }
+.photo-map-hero h1 { margin: 24px 0; max-width: 950px; font: 400 clamp(48px, 7.5vw, 108px)/1.1 Georgia, "Yu Mincho", serif; letter-spacing: -.045em; }
+.photo-map-hero > p:not(.eyebrow) { max-width: 600px; color: var(--muted); line-height: 1.9; }
+.upload-button { width: max-content; margin-top: 32px; padding: 16px 26px; background: var(--gold); color: #090908; font-size: 10px; letter-spacing: .15em; cursor: pointer; }
+.upload-button input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.reading { margin-top: 16px; color: var(--muted); font-size: 10px; }
+.photo-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.photo-result-grid article { background: var(--panel); }
+.photo-result-grid img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.photo-result-grid article > div { padding: 20px; }
+.photo-result-grid h3 { margin: 0 0 16px; font: 400 17px Georgia, serif; overflow-wrap: anywhere; }
+.photo-result-grid p, .photo-result-grid a { color: var(--muted); font-size: 10px; }
+.photo-result-grid a { color: var(--gold); }
+
 @media (max-width: 800px) {
   .site-header { padding: 22px 20px; }
   .site-header nav a:not(:last-child) { display: none; }
@@ -134,10 +194,26 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
   .photo { min-height: 68vh; }
   .full-bleed { min-height: 80vh; background-attachment: scroll; padding: 30px 24px 60px; }
   .food-grid, .best-grid { grid-template-columns: 1fr; }
+  .journey-card-grid { grid-template-columns: repeat(2, 1fr); }
+  .ranking-columns, .stat-grid { grid-template-columns: 1fr; }
+  .ranking-columns { gap: 70px; }
+  .stat-grid article { min-height: 150px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .exif-cta { align-items: start; flex-direction: column; }
+  .japan-map { height: 510px; transform: scale(.88); transform-origin: top left; width: 112%; margin-bottom: -20px; }
+  .prefecture { width: 42px; height: 34px; }
+  .prefecture span { font-size: 7px; }
+  .photo-result-grid { grid-template-columns: 1fr; }
   .food-grid { gap: 40px; }
   .food-image { aspect-ratio: 4/3; }
   .best-grid div { border-right: 0; border-bottom: 1px solid var(--line); }
   footer { flex-direction: column; gap: 10px; }
+}
+
+@media (max-width: 520px) {
+  .journey-card-grid { grid-template-columns: 1fr; }
+  .filter-bar { flex-direction: column; }
+  .filter-bar label { width: 100%; }
+  .japan-map { height: 430px; transform: scale(.72); width: 138%; margin-bottom: -90px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

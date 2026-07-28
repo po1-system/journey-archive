@@ -11,6 +11,11 @@ export type Journey = {
   transport: string[];
   hotel: string[];
   price: string;
+  year: number;
+  totalCost: number;
+  bestPhoto?: string;
+  bestFood?: string;
+  bestPlace?: string;
   days: { title: string; items: string[] }[];
   foods: { name: string; dish: string; price?: string }[];
   note?: string;
@@ -31,6 +36,8 @@ export const journeys: Journey[] = [
     transport: ["飛行機・現地公共交通"],
     hotel: ["香川県内｜2泊"],
     price: "予約費用合計 ¥43,540",
+    year: 2025,
+    totalCost: 43540,
     days: [
       { title: "瀬戸内を巡る", items: ["三豊市", "高松市", "小豆島"] },
     ],
@@ -51,6 +58,10 @@ export const journeys: Journey[] = [
     transport: ["飛行機・地下鉄・徒歩"],
     hotel: ["福岡市内｜1泊"],
     price: "航空券＋ホテル ¥30,720",
+    year: 2026,
+    totalCost: 30720,
+    bestFood: "ラーメン海鳴｜ラーメンジェノバ",
+    bestPlace: "中洲",
     days: [
       { title: "Day 1｜博多旧市街から中洲の夜へ", items: ["ラーメン海鳴", "櫛田神社", "東長寺", "川端通商店街", "ウエスト 生そば春吉店", "中洲散歩"] },
       { title: "Day 2｜博多駅周辺を歩く", items: ["住吉神社", "喜水丸", "つばめの杜ひろば", "福岡空港"] },
@@ -75,6 +86,10 @@ export const journeys: Journey[] = [
     transport: ["飛行機・直通バス・フェリー・JR"],
     hotel: ["広島市内｜1泊"],
     price: "航空券＋ホテル ¥36,290",
+    year: 2026,
+    totalCost: 36290,
+    bestFood: "牡蠣屋｜特選牡蠣屋定食",
+    bestPlace: "厳島神社",
     days: [
       { title: "Day 1｜宮島から平和記念公園へ", items: ["紅葉堂", "厳島神社", "牡蠣屋", "宮島牡蠣カレーパン", "キング軒", "原爆ドーム", "平和記念公園"] },
       { title: "Day 2｜歴史を巡る朝", items: ["広島城", "月あかり", "広島空港"] },
@@ -101,6 +116,10 @@ export const journeys: Journey[] = [
     transport: ["飛行機・北谷ライナー・路線バス・ゆいレール・タクシー"],
     hotel: ["那覇市内｜1泊"],
     price: "航空券＋ホテル ¥42,420",
+    year: 2026,
+    totalCost: 42420,
+    bestFood: "すながわ製麺所｜スペシャルそば",
+    bestPlace: "アメリカンビレッジ",
     days: [
       { title: "Day 1｜北谷と沖縄グルメ", items: ["すながわ製麺所", "アメリカンビレッジ", "BLUE SEAL", "コナズ珈琲", "ジャンボステーキ ハンズ"] },
       { title: "Day 2｜那覇の街", items: ["辻エリア", "A&W 国際通り松尾店", "那覇空港"] },
@@ -128,6 +147,8 @@ export const journeys: Journey[] = [
     transport: ["飛行機・特急くろしお・東海道新幹線", "復路の航空便運航中止により鉄道へ変更"],
     hotel: ["白浜町内｜1泊"],
     price: "予約 ¥44,510・返金 ¥14,740・差引 ¥29,770",
+    year: 2026,
+    totalCost: 29770,
     days: [{ title: "予定から実績へ", items: ["白浜町", "和歌山市", "航空便運航中止", "鉄道へ切り替えて帰京"] }],
     foods: [],
     note: "詳細な訪問スポットと食事は記録照合後に追加予定。",
@@ -146,6 +167,8 @@ export const journeys: Journey[] = [
     transport: ["飛行機・現地公共交通"],
     hotel: ["金沢市内｜1泊"],
     price: "航空券＋ホテル ¥27,610",
+    year: 2026,
+    totalCost: 27610,
     days: [{ title: "金沢と小松", items: ["金沢市", "小松市"] }],
     foods: [],
     note: "詳しい行程・訪問地・食事は写真と記録の照合後に追加予定。",
@@ -164,6 +187,11 @@ export const journeys: Journey[] = [
     transport: ["飛行機・空港連絡バス・市電・路線バス"],
     hotel: ["函館駅周辺｜2泊"],
     price: "航空券＋ホテル ¥43,340",
+    year: 2026,
+    totalCost: 43340,
+    bestPhoto: "函館山の夕景と夜景",
+    bestFood: "箱館ジンギスカン本店",
+    bestPlace: "函館山",
     days: [
       { title: "Day 1｜函館山の光", items: ["函館駅", "十字街", "ラッキーピエロ", "函館山", "夕焼けから夜景のタイムラプス", "箱館ジンギスカン本店"] },
       { title: "Day 2｜朝市から赤レンガへ", items: ["味処 茶夢", "五稜郭タワー", "外国人墓地", "旧ロシア領事館", "競馬場前", "赤レンガ倉庫", "回転寿司"] },
