@@ -133,12 +133,26 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .journey-card h3 { margin: 9px 0 5px; font: 400 27px Georgia, "Yu Mincho", serif; }
 .journey-card p { margin: 0; }
 
-.japan-map { position: relative; height: 640px; max-width: 1040px; margin: 20px auto 40px; }
-.japan-map::before { content: "JAPAN"; position: absolute; left: 44%; top: 42%; color: rgba(255,255,255,.025); font: 400 150px Georgia, serif; letter-spacing: .1em; transform: rotate(-17deg); }
-.prefecture { position: absolute; width: 54px; height: 42px; padding: 0; border: 1px solid rgba(255,255,255,.11); border-radius: 45% 40% 46% 38%; background: #161614; color: #706e68; cursor: default; transform: rotate(-6deg); transition: transform .25s, background .25s, color .25s; }
-.prefecture span { font-size: 8px; letter-spacing: .04em; white-space: nowrap; }
-.prefecture.visited { border-color: rgba(191,167,118,.75); background: linear-gradient(145deg, #bfa776, #74603b); color: #090908; cursor: pointer; box-shadow: 0 0 24px rgba(191,167,118,.18); }
-.prefecture.visited:hover { transform: rotate(-6deg) scale(1.14); z-index: 2; }
+.map-layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 8vw; align-items: center; }
+.map-frame { position: relative; min-height: 690px; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 60% 45%, rgba(191,167,118,.07), transparent 46%), linear-gradient(135deg, rgba(255,255,255,.025), transparent 55%); border: 1px solid rgba(255,255,255,.07); }
+.map-frame::before, .map-frame::after { content: ""; position: absolute; pointer-events: none; }
+.map-frame::before { inset: 28px; border: 1px solid rgba(255,255,255,.045); }
+.map-frame::after { width: 72%; height: 72%; border-radius: 50%; border: 1px solid rgba(191,167,118,.07); box-shadow: 0 0 0 90px rgba(191,167,118,.015), 0 0 0 180px rgba(191,167,118,.01); }
+.japan-map { position: relative; z-index: 1; display: block; width: min(78%, 500px); height: auto; overflow: visible; filter: drop-shadow(0 28px 34px rgba(0,0,0,.45)); }
+.map-prefecture path { fill: #242420; stroke: #77736a; stroke-width: .45; vector-effect: non-scaling-stroke; transition: fill .3s, stroke .3s, filter .3s, opacity .3s; }
+.map-prefecture.visited { cursor: pointer; }
+.map-prefecture.visited path { fill: url("#visited-gold"); stroke: #ead39b; stroke-width: .8; filter: url("#gold-glow"); }
+.map-prefecture.visited:hover path, .map-prefecture.visited:focus path { fill: #e8d39f; stroke: #fff0c6; }
+.map-prefecture:focus { outline: none; }
+.map-coordinate, .map-signature { position: absolute; z-index: 2; color: #67645d; font-size: 8px; letter-spacing: .22em; }
+.map-coordinate { top: 48px; left: 52px; writing-mode: vertical-rl; }
+.map-signature { right: 48px; bottom: 44px; }
+.visited-prefectures { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+.visited-prefectures > p { margin: 0 0 20px; color: var(--gold); font-size: 9px; letter-spacing: .2em; }
+.visited-prefectures button { display: grid; grid-template-columns: 34px 1fr; gap: 10px; width: 100%; padding: 15px 0; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; cursor: pointer; font: 400 17px Georgia, "Yu Mincho", serif; transition: color .25s, padding .25s; }
+.visited-prefectures button:last-child { border-bottom: 1px solid var(--line); }
+.visited-prefectures button:hover { padding-left: 8px; color: var(--gold); }
+.visited-prefectures button span { color: var(--gold); font: 400 9px/2 Georgia, serif; letter-spacing: .1em; }
 .map-legend { display: flex; justify-content: center; gap: 26px; color: var(--muted); font-size: 10px; }
 .map-legend span { display: flex; align-items: center; gap: 8px; }
 .map-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: #252522; }
@@ -199,9 +213,10 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
   .ranking-columns { gap: 70px; }
   .stat-grid article { min-height: 150px; border-right: 0; border-bottom: 1px solid var(--line); }
   .exif-cta { align-items: start; flex-direction: column; }
-  .japan-map { height: 510px; transform: scale(.88); transform-origin: top left; width: 112%; margin-bottom: -20px; }
-  .prefecture { width: 42px; height: 34px; }
-  .prefecture span { font-size: 7px; }
+  .map-layout { grid-template-columns: 1fr; gap: 55px; }
+  .map-frame { min-height: 600px; }
+  .japan-map { width: min(78%, 430px); }
+  .visited-prefectures { width: 100%; }
   .photo-result-grid { grid-template-columns: 1fr; }
   .food-grid { gap: 40px; }
   .food-image { aspect-ratio: 4/3; }
@@ -213,7 +228,11 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
   .journey-card-grid { grid-template-columns: 1fr; }
   .filter-bar { flex-direction: column; }
   .filter-bar label { width: 100%; }
-  .japan-map { height: 430px; transform: scale(.72); width: 138%; margin-bottom: -90px; }
+  .map-frame { min-height: 500px; }
+  .map-frame::before { inset: 18px; }
+  .map-coordinate { top: 34px; left: 32px; }
+  .map-signature { right: 28px; bottom: 28px; }
+  .japan-map { width: 82%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

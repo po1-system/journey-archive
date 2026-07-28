@@ -2,10 +2,26 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import japanMap from "@svg-maps/japan";
 import type { Journey } from "../data/journeys";
-import { mitoJourney, prefectureRegions } from "../archive-config";
+import { mitoJourney } from "../archive-config";
 
 type ArchiveJourney = Pick<Journey, "slug" | "number" | "prefecture" | "title" | "area" | "date" | "duration" | "year" | "totalCost" | "image" | "bestPhoto" | "bestFood" | "bestPlace">;
+
+const prefectureNames: Record<string, string> = {
+  aichi: "愛知県", akita: "秋田県", aomori: "青森県", chiba: "千葉県",
+  ehime: "愛媛県", fukui: "福井県", fukuoka: "福岡県", fukushima: "福島県",
+  gifu: "岐阜県", gunma: "群馬県", hiroshima: "広島県", hokkaido: "北海道",
+  hyogo: "兵庫県", ibaraki: "茨城県", ishikawa: "石川県", iwate: "岩手県",
+  kagawa: "香川県", kagoshima: "鹿児島県", kanagawa: "神奈川県", kochi: "高知県",
+  kumamoto: "熊本県", kyoto: "京都府", mie: "三重県", miyagi: "宮城県",
+  miyazaki: "宮崎県", nagano: "長野県", nagasaki: "長崎県", nara: "奈良県",
+  niigata: "新潟県", oita: "大分県", okayama: "岡山県", okinawa: "沖縄県",
+  osaka: "大阪府", saga: "佐賀県", saitama: "埼玉県", shiga: "滋賀県",
+  shimane: "島根県", shizuoka: "静岡県", tochigi: "栃木県", tokushima: "徳島県",
+  tokyo: "東京都", tottori: "鳥取県", toyama: "富山県", wakayama: "和歌山県",
+  yamagata: "山形県", yamaguchi: "山口県", yamanashi: "山梨県",
+};
 
 export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourney[] }) {
   const allJourneys = useMemo(() => [...journeys, mitoJourney as ArchiveJourney], [journeys]);
@@ -68,18 +84,50 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
           </div>
           <p>{visited.size} / 47 prefectures</p>
         </div>
-        <div className="japan-map" role="img" aria-label={`訪問済み${visited.size}都道府県を色付けした日本地図`}>
-          {prefectureRegions.map((item) => (
-            <button
-              key={item.name}
-              className={visited.has(item.name) ? "prefecture visited" : "prefecture"}
-              style={{ left: `${item.x + 16}%`, top: `${(item.y - 4) * 0.78}%` }}
-              title={`${item.name}${visited.has(item.name) ? "・訪問済み" : "・未訪問"}`}
-              onClick={() => visited.has(item.name) && setPrefecture(item.name)}
-            >
-              <span>{item.name.replace(/[都道府県]/g, "")}</span>
-            </button>
-          ))}
+        <div className="map-layout">
+          <div className="map-frame">
+            <span className="map-coordinate">24° — 46° N</span>
+            <svg className="japan-map" viewBox={japanMap.viewBox} role="img" aria-label={`訪問済み${visited.size}都道府県を色付けした日本地図`}>
+              <defs>
+                <filter id="gold-glow" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="4" result="blur" />
+                  <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+                <linearGradient id="visited-gold" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#e2c98e" />
+                  <stop offset="100%" stopColor="#8d7344" />
+                </linearGradient>
+              </defs>
+              {japanMap.locations.map((location: { id: string; name: string; path: string }) => {
+                const name = prefectureNames[location.id] ?? location.name;
+                const isVisited = visited.has(name);
+                return (
+                  <g
+                    key={location.id}
+                    className={isVisited ? "map-prefecture visited" : "map-prefecture"}
+                    onClick={() => isVisited && setPrefecture(name)}
+                    role={isVisited ? "button" : undefined}
+                    tabIndex={isVisited ? 0 : undefined}
+                    onKeyDown={(event) => {
+                      if (isVisited && (event.key === "Enter" || event.key === " ")) setPrefecture(name);
+                    }}
+                  >
+                    <title>{name} · {isVisited ? "訪問済み" : "未訪問"}</title>
+                    <path d={location.path} />
+                  </g>
+                );
+              })}
+            </svg>
+            <span className="map-signature">JOURNEY ARCHIVE · JAPAN</span>
+          </div>
+          <div className="visited-prefectures">
+            <p>VISITED · {visited.size}</p>
+            {[...visited].map((name, index) => (
+              <button key={name} onClick={() => setPrefecture(name)}>
+                <span>{String(index + 1).padStart(2, "0")}</span>{name}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="map-legend"><span><i className="visited-dot" />訪問済み</span><span><i />未訪問</span></div>
       </section>
