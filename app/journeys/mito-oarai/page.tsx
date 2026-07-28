@@ -54,7 +54,7 @@ export default function MitoOaraiPage() {
               海岸では、旅を象徴する写真を残す。
             </p>
             <dl className="micro-data">
-              <div><dt>Train</dt><dd>ときわ53号 · Green Car</dd></div>
+              <div><dt>Train</dt><dd>常磐線特急</dd></div>
               <div><dt>Lunch</dt><dd>海鮮丼 · ¥2,310</dd></div>
               <div><dt>Route</dt><dd>品川 → 水戸 → 大洗</dd></div>
             </dl>
@@ -64,7 +64,7 @@ export default function MitoOaraiPage() {
 
       <section className="full-bleed lake-photo">
         <div>
-          <p className="eyebrow">Senba Lake · 18:42</p>
+          <p className="eyebrow">Senba Lake · Sunset</p>
           <h2>湖畔で迎えた、<br />静かな夕暮れ。</h2>
           <p>千波湖の夕景は、この旅を象徴する時間になった。</p>
         </div>
@@ -80,14 +80,13 @@ export default function MitoOaraiPage() {
             <p className="eyebrow">Kairakuen</p>
             <h3>仕事を終え、<br />緑の中へ。</h3>
             <p>
-              早朝のオンラインミーティングとPC作業を終えて偕楽園へ。
-              好文亭と日本庭園を歩き、旅の最後は特製塩らぁ麺。
+              二日目は偕楽園へ。好文亭と日本庭園を歩き、旅の最後は特製塩らぁ麺。
               水戸駅で茨城らしい土産を選び、夕方の特急で東京へ戻った。
             </p>
             <dl className="micro-data">
               <div><dt>Garden</dt><dd>偕楽園 · ¥320</dd></div>
               <div><dt>Best food</dt><dd>特製塩らぁ麺</dd></div>
-              <div><dt>Return</dt><dd>ときわ78号 · Green Car</dd></div>
+              <div><dt>Return</dt><dd>常磐線特急</dd></div>
             </dl>
           </div>
           <figure className="photo photo-tall garden-photo">
@@ -134,7 +133,7 @@ export default function MitoOaraiPage() {
         </div>
         <dl className="data-list">
           <div><dt>旅程</dt><dd>2026.07.27 — 07.28</dd></div>
-          <div><dt>宿泊</dt><dd>ダイワロイネットホテル水戸</dd></div>
+          <div><dt>宿泊</dt><dd>水戸駅周辺 · 1泊</dd></div>
           <div><dt>訪問</dt><dd>水戸市・大洗町</dd></div>
           <div><dt>移動</dt><dd>特急ときわ・鹿島臨海鉄道</dd></div>
           <div><dt>総費用</dt><dd>¥31,117</dd></div>

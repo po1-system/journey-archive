@@ -105,6 +105,17 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .closing { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
 .closing p { font: 400 clamp(27px, 4vw, 54px)/1.8 Georgia, "Yu Mincho", serif; }
 .closing a { margin-top: 30px; color: var(--gold); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.archive-days, .archive-food { border-top: 1px solid var(--line); }
+.archive-day-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 60px; margin-top: 45px; }
+.archive-day-grid h2, .archive-food h2 { margin: 0 0 32px; font: 400 clamp(30px, 3.5vw, 52px)/1.35 Georgia, "Yu Mincho", serif; }
+.archive-day-grid ol { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.archive-day-grid li { display: flex; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.archive-day-grid li span { color: var(--gold); font-size: 9px; letter-spacing: .12em; }
+.archive-food-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); border-top: 1px solid var(--line); }
+.archive-food-list article { min-height: 190px; padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.archive-food-list p, .archive-food-list span { margin: 0; color: var(--muted); font-size: 10px; }
+.archive-food-list h3 { margin: 16px 0 32px; font: 400 23px/1.5 Georgia, "Yu Mincho", serif; }
+.archive-note { padding-top: 45px; padding-bottom: 45px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; letter-spacing: .04em; }
 
 @media (max-width: 800px) {
   .site-header { padding: 22px 20px; }

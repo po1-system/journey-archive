@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { journeys } from "./data/journeys";
 
 const heroImages = [
   {
@@ -17,16 +18,6 @@ const heroImages = [
     src: "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=2400&q=88",
     label: "歴史と日常のあいだ",
   },
-];
-
-const journeys = [
-  ["香川", "三豊・高松・小豆島", "2025.11.17 — 11.19"],
-  ["福岡", "福岡市", "2026.01.26 — 01.27"],
-  ["広島", "広島市・宮島", "2026.03.23 — 03.24"],
-  ["沖縄", "那覇・北谷", "2026.04.13 — 04.14"],
-  ["和歌山", "白浜・和歌山市", "2026.04.20 — 04.21"],
-  ["石川", "金沢・小松", "2026.05.11 — 05.12"],
-  ["北海道", "函館", "2026.06.15 — 06.17"],
 ];
 
 export default function Home() {
@@ -109,17 +100,23 @@ export default function Home() {
           <p>7 journeys · 9 nights · 16 days</p>
         </div>
         <div className="journey-list">
-          {journeys.map(([place, area, date], index) => (
-            <article className="journey-row" key={place}>
-              <span className="journey-no">{String(index + 1).padStart(2, "0")}</span>
+          {journeys.map((journey) => (
+            <Link className="journey-row" href={`/journeys/${journey.slug}`} key={journey.slug}>
+              <span className="journey-no">{journey.number}</span>
               <div>
-                <h3>{place}</h3>
-                <p>{area}</p>
+                <h3>{journey.prefecture}</h3>
+                <p>{journey.title}</p>
               </div>
-              <time>{date}</time>
+              <time>{journey.date}</time>
               <span className="journey-arrow">↗</span>
-            </article>
+            </Link>
           ))}
+          <Link className="journey-row" href="/journeys/mito-oarai">
+            <span className="journey-no">08</span>
+            <div><h3>茨城県</h3><p>水戸・大洗</p></div>
+            <time>2026.07.27 — 07.28</time>
+            <span className="journey-arrow">↗</span>
+          </Link>
         </div>
       </section>
 
