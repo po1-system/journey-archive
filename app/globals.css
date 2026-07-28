@@ -126,7 +126,7 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .filter-bar select { display: block; width: 100%; margin-top: 10px; padding: 13px 36px 13px 14px; border: 1px solid var(--line); border-radius: 0; background: var(--panel); color: var(--ink); font: inherit; appearance: auto; }
 .journey-card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .journey-card { display: block; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
-.journey-card-image { aspect-ratio: 4/5; background-size: cover; background-position: center; filter: saturate(.78); transition: filter .4s, transform .4s; }
+.journey-card-image { aspect-ratio: 16/10; background-size: cover; background-position: center; filter: saturate(.78); transition: filter .4s, transform .4s; }
 .journey-card:hover .journey-card-image { filter: saturate(1); transform: translateY(-5px); }
 .journey-card > div:last-child { padding-top: 18px; }
 .journey-card span, .journey-card p { color: var(--muted); font-size: 9px; letter-spacing: .09em; }

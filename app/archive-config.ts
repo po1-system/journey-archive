@@ -11,7 +11,7 @@ export const mitoJourney = {
   year: 2026,
   totalCost: 31117,
   image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2200&q=88",
-  bestPhoto: "千波湖の夕景セルフィー",
+  bestPhoto: "千波湖の夕焼け",
   bestFood: "らぁ麺ふじ田｜特製塩らぁ麺",
   bestPlace: "神磯の鳥居",
 } satisfies Partial<Journey> & Pick<Journey, "slug" | "number" | "prefecture" | "title" | "area" | "date" | "duration" | "year" | "totalCost" | "image">;
@@ -65,4 +65,3 @@ export const prefectureRegions = [
   { name: "鹿児島県", region: "九州", x: -7, y: 111 },
   { name: "沖縄県", region: "沖縄", x: -16, y: 116 },
 ] as const;
-

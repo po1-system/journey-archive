@@ -126,14 +126,15 @@ export default function MitoOaraiPage() {
       <section className="best section">
         <p className="section-index">EDITOR&apos;S SELECTION</p>
         <div className="best-grid">
-          <div><span>Best photo</span><h3>千波湖の<br />夕景セルフィー</h3></div>
+          <div><span>Best scenery</span><h3>千波湖の<br />夕焼け</h3></div>
           <div><span>Best food</span><h3>ふじ田の<br />特製塩らぁ麺</h3></div>
           <div><span>Best place</span><h3>海に立つ<br />神磯の鳥居</h3></div>
         </div>
       </section>
 
       <JourneyGallery slug="mito-oarai" placement="food" title="食の記録" />
-      <JourneyGallery slug="mito-oarai" placement="best" title="旅の一枚" />
+      <JourneyGallery slug="mito-oarai" placement="best" title="旅の景色" />
+      <JourneyGallery slug="mito-oarai" placement="selfie" title="旅先のセルフィー · Best 3" />
       <JourneyGallery slug="mito-oarai" placement="gallery" />
 
       <section className="travel-data section">

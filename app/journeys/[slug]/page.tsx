@@ -75,7 +75,8 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
       )}
 
       <JourneyGallery slug={journey.slug} placement="food" title="食の記録" />
-      <JourneyGallery slug={journey.slug} placement="best" title="旅の一枚" />
+      <JourneyGallery slug={journey.slug} placement="best" title="旅の景色" />
+      <JourneyGallery slug={journey.slug} placement="selfie" title="旅先のセルフィー · Best 3" />
       <JourneyGallery slug={journey.slug} placement="gallery" />
 
       <section className="travel-data section">

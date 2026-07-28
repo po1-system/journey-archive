@@ -19,6 +19,7 @@ type Candidate = {
   caption: string;
   selected: boolean;
   placement: PhotoPlacement;
+  rank: number;
 };
 
 type ManifestPhoto = {
@@ -30,6 +31,7 @@ type ManifestPhoto = {
   src: string;
   caption?: string;
   placement: PhotoPlacement;
+  rank?: number;
 };
 
 const journeyOptions = [
@@ -133,6 +135,7 @@ export default function PhotoPublisherPage() {
         caption: "",
         selected: Boolean(result.journey),
         placement: result.placement,
+        rank: 1,
         landscape,
       };
     }));
@@ -177,6 +180,7 @@ export default function PhotoPublisherPage() {
           src: `/photos/${photo.journey}/${safeId}.webp`,
           caption: photo.caption || undefined,
           placement: photo.placement,
+          rank: photo.placement === "selfie" ? photo.rank : undefined,
         });
       }
       zip.file("manifest.json", JSON.stringify(additions, null, 2));
@@ -242,10 +246,20 @@ export default function PhotoPublisherPage() {
                       <option value="day">Day｜日ごとの記録</option>
                       <option value="food">Food｜食べたもの</option>
                       <option value="place">Place｜訪れた場所</option>
-                      <option value="best">Best Shot｜旅の一枚</option>
+                      <option value="best">Best Scenery｜景色の一枚</option>
+                      <option value="selfie">Best Selfies｜セルフィー</option>
                       <option value="gallery">Gallery｜写真一覧</option>
                     </select>
                   </label>
+                  {photo.placement === "selfie" && (
+                    <label>セルフィー順位
+                      <select value={photo.rank} onChange={(event) => update(photo.id, { rank: Number(event.target.value) })}>
+                        <option value={1}>1位</option>
+                        <option value={2}>2位</option>
+                        <option value={3}>3位</option>
+                      </select>
+                    </label>
+                  )}
                   <label>撮影場所<input value={photo.place} onChange={(event) => update(photo.id, { place: event.target.value })} placeholder="例：神磯の鳥居" /></label>
                   <label>一言メモ<input value={photo.caption} onChange={(event) => update(photo.id, { caption: event.target.value })} placeholder="任意" /></label>
                   <p>{photo.takenAt || "撮影日時なし"} · {photo.latitude != null ? "GPSあり" : "GPSなし"}</p>

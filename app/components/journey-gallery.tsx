@@ -1,6 +1,6 @@
 import photoManifest from "../data/photo-manifest.json";
 
-export type PhotoPlacement = "hero" | "day" | "food" | "place" | "best" | "gallery";
+export type PhotoPlacement = "hero" | "day" | "food" | "place" | "best" | "selfie" | "gallery";
 
 export type PublishedPhoto = {
   id: string;
@@ -11,6 +11,7 @@ export type PublishedPhoto = {
   src: string;
   caption?: string;
   placement?: PhotoPlacement;
+  rank?: number;
 };
 
 export function getJourneyHero(slug: string) {
@@ -18,9 +19,10 @@ export function getJourneyHero(slug: string) {
 }
 
 export default function JourneyGallery({ slug, placement = "gallery", title }: { slug: string; placement?: PhotoPlacement; title?: string }) {
-  const photos = (photoManifest as PublishedPhoto[]).filter((photo) =>
-    photo.journey === slug && (photo.placement ?? "gallery") === placement
-  );
+  const photos = (photoManifest as PublishedPhoto[])
+    .filter((photo) => photo.journey === slug && (photo.placement ?? "gallery") === placement)
+    .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
+    .slice(0, placement === "selfie" ? 3 : placement === "best" ? 1 : undefined);
   const basePath = process.env.GITHUB_ACTIONS === "true" ? "/journey-archive" : "";
   if (photos.length === 0) return null;
 
@@ -28,7 +30,7 @@ export default function JourneyGallery({ slug, placement = "gallery", title }: {
     <section className="published-gallery section">
       <div className="section-heading">
         <div>
-          <p className="section-index">{placement === "best" ? "BEST SHOT" : "PHOTO JOURNAL"}</p>
+          <p className="section-index">{placement === "best" ? "BEST SCENERY" : placement === "selfie" ? "BEST SELFIES · TOP 3" : "PHOTO JOURNAL"}</p>
           <h2>{title ?? "旅の写真"}</h2>
         </div>
         <p>{photos.length} photographs</p>
@@ -40,7 +42,7 @@ export default function JourneyGallery({ slug, placement = "gallery", title }: {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${basePath}${photo.src}`} alt={photo.caption || photo.place} loading="lazy" />
             <figcaption>
-              <span>DAY {photo.day}</span>
+              <span>{placement === "selfie" ? `NO. ${photo.rank ?? "—"}` : `DAY ${photo.day}`}</span>
               <strong>{photo.place || "場所未設定"}</strong>
               {photo.takenAt && <time>{photo.takenAt}</time>}
               {photo.caption && <p>{photo.caption}</p>}
