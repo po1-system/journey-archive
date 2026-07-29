@@ -57,16 +57,14 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
       <JourneyGallery slug={journey.slug} placement="day" title="旅の時間" />
       <JourneyGallery slug={journey.slug} placement="place" title="訪れた場所" />
 
-      {journey.foods.length > 0 && (
-        <JourneyFoodCollection
-          slug={journey.slug}
-          foods={journey.foods.map((food) => ({
-            shop: food.name,
-            dish: food.dish,
-            price: food.price,
-          }))}
-        />
-      )}
+      <JourneyFoodCollection
+        slug={journey.slug}
+        foods={journey.foods.map((food) => ({
+          shop: food.name,
+          dish: food.dish,
+          price: food.price,
+        }))}
+      />
 
       <JourneyGallery slug={journey.slug} placement="best" title="旅の景色" />
       <JourneyGallery slug={journey.slug} placement="selfie" title="旅先のセルフィー · Best 3" />

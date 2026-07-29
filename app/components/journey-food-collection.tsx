@@ -39,6 +39,36 @@ export default function JourneyFoodCollection({
     (photo) => photo.journey === slug && photo.placement === "food",
   );
   const basePath = process.env.NODE_ENV === "production" ? "/journey-archive" : "";
+  const matchedIds = new Set(
+    foods.flatMap((food) => published.filter((photo) => belongsToShop(photo.place, food)).map((photo) => photo.id)),
+  );
+  const unmatchedGroups = Object.entries(
+    published
+      .filter((photo) => !matchedIds.has(photo.id))
+      .reduce<Record<string, typeof published>>((groups, photo) => {
+        const label = photo.place.trim() || "店舗名未設定";
+        (groups[label] ??= []).push(photo);
+        return groups;
+      }, {}),
+  );
+  const cards: Array<{ key: string; food: FoodCollectionItem; photos: typeof published }> = [
+    ...foods.map((food) => ({
+      key: food.shop,
+      food,
+      photos: published.filter((photo) => belongsToShop(photo.place, food)),
+    })),
+    ...unmatchedGroups.map(([place, photos]) => ({
+      key: `uploaded-${place}`,
+      food: {
+        shop: place,
+        dish: photos.map((photo) => photo.caption).filter(Boolean).join("・") || "旅先で食べたもの",
+        price: undefined,
+      },
+      photos,
+    })),
+  ];
+
+  if (cards.length === 0) return null;
 
   return (
     <section className="food section">
@@ -50,10 +80,9 @@ export default function JourneyFoodCollection({
         {total && <p>Food total · {total}</p>}
       </div>
       <div className="food-grid integrated-food-grid">
-        {foods.map((food) => {
-          const photos = published.filter((photo) => belongsToShop(photo.place, food));
+        {cards.map(({ key, food, photos }) => {
           return (
-            <article className="food-card integrated-food-card" key={food.shop}>
+            <article className="food-card integrated-food-card" key={key}>
               <div className="food-photo-strip">
                 {photos.length > 0 ? photos.map((photo) => (
                   <figure key={photo.id}>
@@ -69,7 +98,7 @@ export default function JourneyFoodCollection({
               <div className="food-card-copy">
                 <p>{food.shop}</p>
                 <h3>{food.dish}</h3>
-                <span>{food.price ?? "価格未確認"}</span>
+                <span>{food.price ?? (photos.length > 0 ? "価格未登録" : "価格未確認")}</span>
                 {photos.length > 0 && <small>{photos.length} photographs</small>}
               </div>
             </article>
