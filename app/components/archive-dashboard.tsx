@@ -39,6 +39,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
   const [year, setYear] = useState("すべて");
   const [prefecture, setPrefecture] = useState("すべて");
   const [activeJourneySlug, setActiveJourneySlug] = useState("mito-oarai");
+  const [constellationMode, setConstellationMode] = useState<"geography" | "chronology">("geography");
   const years = [...new Set(allJourneys.map((journey) => journey.year))].sort();
   const prefectures = [...new Set(allJourneys.map((journey) => journey.prefecture))];
   const filtered = allJourneys.filter((journey) =>
@@ -50,8 +51,18 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
   const rankedPhotos = allJourneys.filter((journey) => journey.bestPhoto);
   const rankedFoods = allJourneys.filter((journey) => journey.bestFood);
   const activeJourney = allJourneys.find((journey) => journey.slug === activeJourneySlug) ?? allJourneys[0];
-  const constellationPoints = allJourneys
-    .map((journey) => journeyPoints[journey.slug])
+  const activeJourneyIndex = allJourneys.findIndex((journey) => journey.slug === activeJourney.slug);
+  const displayPoints = allJourneys.map((journey, index) =>
+    constellationMode === "geography"
+      ? journeyPoints[journey.slug]
+      : { x: 10 + index * (80 / Math.max(1, allJourneys.length - 1)), y: 50 + Math.sin(index * 1.75) * 22 },
+  );
+  const constellationPoints = displayPoints
+    .filter(Boolean)
+    .map((point) => `${point.x},${point.y}`)
+    .join(" ");
+  const travelledPoints = displayPoints
+    .slice(0, activeJourneyIndex + 1)
     .filter(Boolean)
     .map((point) => `${point.x},${point.y}`)
     .join(" ");
@@ -102,8 +113,18 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
           </div>
           <p>{allJourneys.length} journeys · {visited.size} / 47 prefectures</p>
         </div>
+        <div className="constellation-controls" aria-label="地図の表示方法">
+          <button className={constellationMode === "geography" ? "active" : ""} onClick={() => setConstellationMode("geography")}>
+            <span>01</span> Geography
+          </button>
+          <button className={constellationMode === "chronology" ? "active" : ""} onClick={() => setConstellationMode("chronology")}>
+            <span>02</span> Chronology
+          </button>
+          <p>{constellationMode === "geography" ? "場所から記憶をたどる" : "時間から記憶をたどる"}</p>
+        </div>
         <div className="constellation-shell">
-          <div className="map-frame constellation-map">
+          <div className={`map-frame constellation-map mode-${constellationMode}`}>
+            <div className="memory-ambient-image" style={{ backgroundImage: `url("${activeJourney.image}")` }} />
             <span className="map-coordinate">24° — 46° N</span>
             <svg className="japan-map" viewBox={japanMap.viewBox} role="img" aria-label={`訪問済み${visited.size}都道府県を色付けした日本地図`}>
               <defs>
@@ -143,11 +164,12 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
                   <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
               </defs>
-              <polyline points={constellationPoints} />
+              <polyline className="memory-path-base" points={constellationPoints} />
+              <polyline className="memory-path-travelled" points={travelledPoints} />
             </svg>
             <div className="memory-nodes">
-              {allJourneys.map((journey) => {
-                const point = journeyPoints[journey.slug];
+              {allJourneys.map((journey, index) => {
+                const point = displayPoints[index];
                 if (!point) return null;
                 return (
                   <button
@@ -168,6 +190,11 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
             </div>
             <span className="map-signature">MEMORIES CONNECTED · 2025 — ∞</span>
             <span className="map-scan" />
+            {constellationMode === "chronology" && (
+              <div className="chronology-axis" aria-hidden="true">
+                <span>2025</span><i /><span>2026</span><i /><span>∞</span>
+              </div>
+            )}
           </div>
           <div className="memory-console" aria-live="polite">
             <div className="memory-console-head">
@@ -191,6 +218,23 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
                 </button>
               ))}
             </div>
+            <label className="memory-scrubber">
+              <span>TIME SCRUBBER</span>
+              <input
+                type="range"
+                min="0"
+                max={allJourneys.length - 1}
+                value={activeJourneyIndex}
+                onChange={(event) => {
+                  const journey = allJourneys[Number(event.target.value)];
+                  if (journey) {
+                    setActiveJourneySlug(journey.slug);
+                    setPrefecture(journey.prefecture);
+                  }
+                }}
+              />
+              <output>{activeJourney.number} · {activeJourney.date.slice(0, 10)}</output>
+            </label>
           </div>
         </div>
         <div className="map-legend">
