@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getJourney, journeys } from "../../data/journeys";
-import JourneyGallery, { getJourneyHero } from "../../components/journey-gallery";
+import JourneyGallery from "../../components/journey-gallery";
+import JourneyHeroImage from "../../components/journey-hero-image";
 
 export function generateStaticParams() {
   return journeys.map(({ slug }) => ({ slug }));
@@ -11,9 +12,6 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const journey = getJourney(slug);
   if (!journey) notFound();
-  const heroPhoto = getJourneyHero(journey.slug);
-  const heroBase = process.env.GITHUB_ACTIONS === "true" ? "/journey-archive" : "";
-
   return (
     <main className="story-page archive-detail">
       <header className="site-header story-header">
@@ -22,7 +20,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
       </header>
 
       <section className="story-hero">
-        <div className="story-hero-image" style={{ backgroundImage: `url("${heroPhoto ? `${heroBase}${heroPhoto.src}` : journey.image}")` }} />
+        <JourneyHeroImage slug={journey.slug} fallback={journey.image} />
         <div className="hero-shade" />
         <div className="story-hero-content">
           <p className="eyebrow">Journey {journey.number} · {journey.prefecture}</p>

@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as exifr from "exifr";
 import JSZip from "jszip";
-import type { PhotoPlacement } from "../../components/journey-gallery";
+import { PHOTO_API, type PhotoPlacement } from "../../components/journey-gallery";
 
 type Candidate = {
   id: string;
@@ -110,6 +110,11 @@ export default function PhotoPublisherPage() {
   const [photos, setPhotos] = useState<Candidate[]>([]);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [adminKey, setAdminKey] = useState("");
+
+  useEffect(() => {
+    setAdminKey(localStorage.getItem("journeyArchiveAdminKey") ?? "");
+  }, []);
 
   async function inspect(files: FileList | null) {
     if (!files) return;
@@ -199,6 +204,58 @@ export default function PhotoPublisherPage() {
     }
   }
 
+  async function publishDirectly() {
+    const selected = photos.filter((photo) => photo.selected && photo.journey);
+    if (selected.length === 0 || !adminKey.trim()) {
+      setStatus("公開する写真と管理パスコードを確認してください。");
+      return;
+    }
+    setBusy(true);
+    try {
+      const form = new FormData();
+      const additions: ManifestPhoto[] = [];
+      const files: Array<{ id: string; blob: Blob }> = [];
+
+      for (let index = 0; index < selected.length; index++) {
+        const photo = selected[index];
+        setStatus(`${index + 1} / ${selected.length}枚をWeb用に変換しています…`);
+        const blob = await resizeToWebp(photo.file);
+        const safeId = `${new Date().toISOString().slice(0, 10)}-${photo.id}`;
+        files.push({ id: safeId, blob });
+        additions.push({
+          id: safeId,
+          journey: photo.journey,
+          day: photo.day,
+          place: photo.place,
+          takenAt: photo.takenAt || undefined,
+          src: `${PHOTO_API}/photo/${encodeURIComponent(safeId)}`,
+          caption: photo.caption || undefined,
+          placement: photo.placement,
+          rank: photo.placement === "selfie" ? photo.rank : undefined,
+        });
+      }
+
+      form.append("manifest", JSON.stringify(additions));
+      files.forEach(({ id, blob }) => form.append(id, blob, `${id}.webp`));
+      setStatus("写真を旅のページへ公開しています…");
+      const response = await fetch(`${PHOTO_API}/publish`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${adminKey.trim()}` },
+        body: form,
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "公開に失敗しました");
+
+      localStorage.setItem("journeyArchiveAdminKey", adminKey.trim());
+      setStatus(`${result.published ?? selected.length}枚を公開しました。各旅行ページを開くとすぐに確認できます。`);
+      setPhotos([]);
+    } catch (error) {
+      setStatus(`公開できませんでした：${error instanceof Error ? error.message : "不明なエラー"}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <main className="photo-admin-page">
       <header className="site-header story-header">
@@ -267,13 +324,23 @@ export default function PhotoPublisherPage() {
               </article>
             ))}
           </div>
-          <div className="publish-panel safe-pack-panel">
+          <div className="publish-panel direct-publish-panel">
             <div>
-              <h3>公開用パックを作成</h3>
-              <p>確認した写真をWeb用に縮小し、配置情報と一緒に1つのZIPへまとめます。完成したZIPをCodexへ添付すると、連携済みのGitHub認証で安全に公開できます。</p>
+              <h3>この画面から直接公開</h3>
+              <p>確認した写真をWeb用に変換し、選んだ旅行・セクションへ直接公開します。管理パスコードはこの端末内だけに記憶されます。</p>
             </div>
-            <button onClick={createPublishPack} disabled={busy || !photos.some((photo) => photo.selected && photo.journey)}>公開用ZIPを作る</button>
+            <label className="admin-key-field">管理パスコード
+              <input
+                type="password"
+                value={adminKey}
+                onChange={(event) => setAdminKey(event.target.value)}
+                placeholder="初回のみ入力"
+                autoComplete="current-password"
+              />
+            </label>
+            <button onClick={publishDirectly} disabled={busy || !adminKey.trim() || !photos.some((photo) => photo.selected && photo.journey)}>写真を公開する</button>
           </div>
+          <button className="backup-pack-button" onClick={createPublishPack} disabled={busy || !photos.some((photo) => photo.selected && photo.journey)}>予備のZIPを作る</button>
           <p className="privacy-note">画像は公開前にWebPへ変換されるため、元写真のGPSを含むEXIF情報は公開ファイルへ引き継がれません。</p>
         </section>
       )}

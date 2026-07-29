@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import photoManifest from "../data/photo-manifest.json";
 
 export type PhotoPlacement = "hero" | "day" | "food" | "place" | "best" | "selfie" | "gallery";
@@ -14,12 +17,27 @@ export type PublishedPhoto = {
   rank?: number;
 };
 
-export function getJourneyHero(slug: string) {
-  return (photoManifest as PublishedPhoto[]).find((photo) => photo.journey === slug && photo.placement === "hero");
+export const PHOTO_API = "https://journey-archive-photo-publisher.po1-system.workers.dev";
+
+export function usePublishedPhotos() {
+  const [remote, setRemote] = useState<PublishedPhoto[]>([]);
+
+  useEffect(() => {
+    fetch(`${PHOTO_API}/manifest`, { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : [])
+      .then((photos: PublishedPhoto[]) => setRemote(Array.isArray(photos) ? photos : []))
+      .catch(() => setRemote([]));
+  }, []);
+
+  return useMemo(() => {
+    const remoteIds = new Set(remote.map((photo) => photo.id));
+    return [...(photoManifest as PublishedPhoto[]).filter((photo) => !remoteIds.has(photo.id)), ...remote];
+  }, [remote]);
 }
 
 export default function JourneyGallery({ slug, placement = "gallery", title }: { slug: string; placement?: PhotoPlacement; title?: string }) {
-  const photos = (photoManifest as PublishedPhoto[])
+  const publishedPhotos = usePublishedPhotos();
+  const photos = publishedPhotos
     .filter((photo) => photo.journey === slug && (photo.placement ?? "gallery") === placement)
     .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
     .slice(0, placement === "selfie" ? 3 : placement === "best" ? 1 : undefined);
@@ -40,7 +58,7 @@ export default function JourneyGallery({ slug, placement = "gallery", title }: {
           <figure key={photo.id}>
             {/* Published photos are already resized and optimized by the importer. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${basePath}${photo.src}`} alt={photo.caption || photo.place} loading="lazy" />
+            <img src={photo.src.startsWith("http") ? photo.src : `${basePath}${photo.src}`} alt={photo.caption || photo.place} loading="lazy" />
             <figcaption>
               <span>{placement === "selfie" ? `NO. ${photo.rank ?? "—"}` : `DAY ${photo.day}`}</span>
               <strong>{photo.place || "場所未設定"}</strong>

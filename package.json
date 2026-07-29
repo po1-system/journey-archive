@@ -13,6 +13,7 @@
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "photos:import": "node scripts/import-photo-pack.mjs",
+    "photos:worker:deploy": "wrangler deploy --config wrangler.photo-publisher.jsonc",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

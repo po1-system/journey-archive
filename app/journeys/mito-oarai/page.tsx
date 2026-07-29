@@ -1,5 +1,6 @@
 import Link from "next/link";
-import JourneyGallery, { getJourneyHero } from "../../components/journey-gallery";
+import JourneyGallery from "../../components/journey-gallery";
+import JourneyHeroImage from "../../components/journey-hero-image";
 
 const foods = [
   { shop: "浜っこ食堂 お魚天国", dish: "海鮮丼", price: "¥2,310", image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=86" },
@@ -8,8 +9,6 @@ const foods = [
 ];
 
 export default function MitoOaraiPage() {
-  const heroPhoto = getJourneyHero("mito-oarai");
-  const heroBase = process.env.GITHUB_ACTIONS === "true" ? "/journey-archive" : "";
   return (
     <main className="story-page">
       <header className="site-header story-header">
@@ -18,7 +17,7 @@ export default function MitoOaraiPage() {
       </header>
 
       <section className="story-hero">
-        <div className="story-hero-image" style={heroPhoto ? { backgroundImage: `url("${heroBase}${heroPhoto.src}")` } : undefined} />
+        <JourneyHeroImage slug="mito-oarai" />
         <div className="hero-shade" />
         <div className="story-hero-content">
           <p className="eyebrow">Journey 08 · Ibaraki</p>

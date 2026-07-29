@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "journey-archive-photo-publisher",
+  "main": "cloudflare/photo-publisher.ts",
+  "compatibility_date": "2026-07-29",
+  "kv_namespaces": [
+    {
+      "binding": "JOURNEY_PHOTOS",
+      "id": "2655c8b285fe49aabf1545d5cc205005"
+    }
+  ]
+}

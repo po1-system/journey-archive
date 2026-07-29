@@ -37,6 +37,7 @@
     "drizzle",
     "examples",
     "worker",
+    "cloudflare",
     "drizzle.config.ts"
   ]
 }
