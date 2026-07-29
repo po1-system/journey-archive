@@ -91,6 +91,15 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .food-card > div:last-child { padding: 20px; }
 .food-card p, .food-card span { color: var(--muted); font-size: 10px; }
 .food-card h3 { margin: 9px 0 18px; font: 400 22px Georgia, "Yu Mincho", serif; }
+.integrated-food-grid { align-items: start; }
+.integrated-food-card { overflow: hidden; }
+.food-photo-strip { height: 320px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(54%, 1fr); gap: 2px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; scroll-snap-type: x proximity; background: #080807; }
+.food-photo-strip figure { position: relative; min-width: 0; margin: 0; scroll-snap-align: start; }
+.food-photo-strip img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.food-photo-strip figcaption { position: absolute; right: 10px; bottom: 10px; left: 10px; padding: 8px; background: rgba(0,0,0,.62); color: #fff; font-size: 8px; }
+.food-photo-strip > .food-image { width: 100%; height: 100%; aspect-ratio: auto; }
+.food-card-copy { position: relative; }
+.food-card-copy small { position: absolute; top: 20px; right: 20px; color: var(--muted); font-size: 8px; letter-spacing: .08em; }
 .best { border-top: 1px solid var(--line); }
 .best-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 35px; border-top: 1px solid var(--line); }
 .best-grid div { min-height: 240px; padding: 34px 26px; border-right: 1px solid var(--line); }

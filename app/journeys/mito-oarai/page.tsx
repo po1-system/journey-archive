@@ -1,11 +1,12 @@
 import Link from "next/link";
 import JourneyGallery from "../../components/journey-gallery";
 import JourneyHeroImage from "../../components/journey-hero-image";
+import JourneyFoodCollection from "../../components/journey-food-collection";
 
 const foods = [
-  { shop: "浜っこ食堂 お魚天国", dish: "海鮮丼", price: "¥2,310", image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=86" },
-  { shop: "喰処・飲処 てんまさ", dish: "納豆料理とカキフライ", price: "¥2,590", image: "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=1200&q=86" },
-  { shop: "らぁ麺ふじ田 水戸本店", dish: "特製塩らぁ麺", price: "¥1,560", image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1200&q=86" },
+  { shop: "浜っこ食堂 お魚天国", dish: "海鮮丼", price: "¥2,310", image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=86", aliases: ["お魚天国", "浜っこ食堂"] },
+  { shop: "喰処・飲処 てんまさ", dish: "納豆料理とカキフライ", price: "¥2,590", image: "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=1200&q=86", aliases: ["てんまさ"] },
+  { shop: "らぁ麺ふじ田 水戸本店", dish: "特製塩らぁ麺", price: "¥1,560", image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1200&q=86", aliases: ["らぁ麺ふじ田", "ふじ田"] },
 ];
 
 export default function MitoOaraiPage() {
@@ -100,27 +101,7 @@ export default function MitoOaraiPage() {
         </div>
       </section>
 
-      <section className="food section">
-        <div className="section-heading">
-          <div>
-            <p className="section-index">FOOD COLLECTION</p>
-            <h2>旅で食べたもの</h2>
-          </div>
-          <p>Food total · ¥6,460</p>
-        </div>
-        <div className="food-grid">
-          {foods.map((food) => (
-            <article className="food-card" key={food.shop}>
-              <div className="food-image" style={{ backgroundImage: `url("${food.image}")` }} />
-              <div>
-                <p>{food.shop}</p>
-                <h3>{food.dish}</h3>
-                <span>{food.price}</span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      <JourneyFoodCollection slug="mito-oarai" foods={foods} total="¥6,460" />
 
       <section className="best section">
         <p className="section-index">EDITOR&apos;S SELECTION</p>
@@ -131,7 +112,6 @@ export default function MitoOaraiPage() {
         </div>
       </section>
 
-      <JourneyGallery slug="mito-oarai" placement="food" title="食の記録" />
       <JourneyGallery slug="mito-oarai" placement="best" title="旅の景色" />
       <JourneyGallery slug="mito-oarai" placement="selfie" title="旅先のセルフィー · Best 3" />
       <JourneyGallery slug="mito-oarai" placement="gallery" />

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getJourney, journeys } from "../../data/journeys";
 import JourneyGallery from "../../components/journey-gallery";
 import JourneyHeroImage from "../../components/journey-hero-image";
+import JourneyFoodCollection from "../../components/journey-food-collection";
 
 export function generateStaticParams() {
   return journeys.map(({ slug }) => ({ slug }));
@@ -57,22 +58,16 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
       <JourneyGallery slug={journey.slug} placement="place" title="訪れた場所" />
 
       {journey.foods.length > 0 && (
-        <section className="archive-food section">
-          <p className="section-index">FOOD COLLECTION</p>
-          <h2>旅で食べたもの</h2>
-          <div className="archive-food-list">
-            {journey.foods.map((food) => (
-              <article key={`${food.name}-${food.dish}`}>
-                <p>{food.name}</p>
-                <h3>{food.dish}</h3>
-                <span>{food.price ?? "価格未確認"}</span>
-              </article>
-            ))}
-          </div>
-        </section>
+        <JourneyFoodCollection
+          slug={journey.slug}
+          foods={journey.foods.map((food) => ({
+            shop: food.name,
+            dish: food.dish,
+            price: food.price,
+          }))}
+        />
       )}
 
-      <JourneyGallery slug={journey.slug} placement="food" title="食の記録" />
       <JourneyGallery slug={journey.slug} placement="best" title="旅の景色" />
       <JourneyGallery slug={journey.slug} placement="selfie" title="旅先のセルフィー · Best 3" />
       <JourneyGallery slug={journey.slug} placement="gallery" />
