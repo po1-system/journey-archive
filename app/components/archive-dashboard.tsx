@@ -43,8 +43,8 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
       <section className="archive-tools section" id="explore">
         <div className="section-heading">
           <div>
-            <p className="section-index">003 — EXPLORE</p>
-            <h2>旅を探す</h2>
+            <p className="section-index">003 — JOURNEY INDEX</p>
+            <h2>旅の記録</h2>
           </div>
           <p>{filtered.length} journeys</p>
         </div>
@@ -79,7 +79,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
       <section className="map-section section" id="map">
         <div className="section-heading">
           <div>
-            <p className="section-index">004 — VISITED MAP</p>
+            <p className="section-index">004 — TRAVEL MAP</p>
             <h2>旅した日本</h2>
           </div>
           <p>{visited.size} / 47 prefectures</p>
@@ -135,7 +135,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
       <section className="rankings section" id="rankings">
         <div className="section-heading">
           <div>
-            <p className="section-index">005 — BEST OF JOURNEYS</p>
+            <p className="section-index">005 — EDITOR&apos;S SELECTION</p>
             <h2>旅のベスト</h2>
           </div>
           <p>記録済みの旅から選出</p>
@@ -163,7 +163,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
       <section className="statistics section" id="statistics">
         <div className="section-heading">
           <div>
-            <p className="section-index">006 — STATISTICS</p>
+            <p className="section-index">006 — ARCHIVE NOTES</p>
             <h2>数字で見る旅</h2>
           </div>
           <p>登録データから自動集計</p>

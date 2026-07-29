@@ -28,8 +28,8 @@ export default function Home() {
         <Link href="/" className="brand">Journey Archive</Link>
         <nav aria-label="メインナビゲーション">
           <a href="#journeys">Journeys</a>
-          <a href="#explore">Explore</a>
           <a href="#map">Map</a>
+          <a href="#rankings">Best</a>
           <Link href="/journeys/mito-oarai">Featured</Link>
         </nav>
       </header>
@@ -94,35 +94,6 @@ export default function Home() {
       </section>
 
       <ArchiveDashboard journeys={journeys} />
-
-      <section className="archive section" id="archive">
-        <div className="section-heading">
-          <div>
-            <p className="section-index">003 — JOURNEYS</p>
-            <h2>旅の記録</h2>
-          </div>
-          <p>8 journeys · 10 nights · 18 days</p>
-        </div>
-        <div className="journey-list">
-          {journeys.map((journey) => (
-            <Link className="journey-row" href={`/journeys/${journey.slug}`} key={journey.slug}>
-              <span className="journey-no">{journey.number}</span>
-              <div>
-                <h3>{journey.prefecture}</h3>
-                <p>{journey.title}</p>
-              </div>
-              <time>{journey.date}</time>
-              <span className="journey-arrow">↗</span>
-            </Link>
-          ))}
-          <Link className="journey-row" href="/journeys/mito-oarai">
-            <span className="journey-no">08</span>
-            <div><h3>茨城県</h3><p>水戸・大洗</p></div>
-            <time>2026.07.27 — 07.28</time>
-            <span className="journey-arrow">↗</span>
-          </Link>
-        </div>
-      </section>
 
       <footer>
         <p>まだ見ぬ景色求めて — Journey Archive</p>
