@@ -24,7 +24,7 @@ export default function MitoOaraiPage() {
       <CinematicRoute stops={routeStops} />
       <header className="site-header story-header">
         <Link href="/" className="brand">Journey Archive</Link>
-        <Link href="/" className="back-link">← All journeys</Link>
+        <Link href="/#explore" className="back-link">← All journeys</Link>
       </header>
 
       <section className="story-hero" id="mito-departure">
@@ -162,7 +162,7 @@ export default function MitoOaraiPage() {
 
       <section className="closing section">
         <p>海、歴史、庭園、食がバランスよく詰まった旅。<br />次は梅の偕楽園と、那珂湊へ。</p>
-        <Link href="/">Back to archive →</Link>
+        <Link href="/#explore">Back to archive →</Link>
       </section>
     </main>
   );

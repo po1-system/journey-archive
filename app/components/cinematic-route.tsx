@@ -10,7 +10,7 @@ export type JourneyStop = {
   tone: "dawn" | "day" | "sunset" | "night";
 };
 
-export default function CinematicRoute({ stops }: { stops: JourneyStop[] }) {
+export default function CinematicRoute({ stops, coordinates = ["36.3659° N", "140.4712° E"] }: { stops: JourneyStop[]; coordinates?: [string, string] }) {
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
 
@@ -61,8 +61,8 @@ export default function CinematicRoute({ stops }: { stops: JourneyStop[] }) {
         ))}
       </ol>
       <div className="route-coordinate">
-        <span>36.3659° N</span>
-        <span>140.4712° E</span>
+        <span>{coordinates[0]}</span>
+        <span>{coordinates[1]}</span>
       </div>
     </aside>
   );

@@ -4,6 +4,8 @@ import { getJourney, journeys } from "../../data/journeys";
 import JourneyGallery from "../../components/journey-gallery";
 import JourneyHeroImage from "../../components/journey-hero-image";
 import JourneyFoodCollection from "../../components/journey-food-collection";
+import CinematicRoute from "../../components/cinematic-route";
+import { getCinematicPreset } from "../../data/cinematic-presets";
 
 export function generateStaticParams() {
   return journeys.map(({ slug }) => ({ slug }));
@@ -13,14 +15,19 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const journey = getJourney(slug);
   if (!journey) notFound();
+  const cinematic = getCinematicPreset(journey.slug);
+  const locationCount = new Set(journey.days.flatMap((day) => day.items)).size;
+  const dayCount = Number(journey.duration.match(/(\d+)日/)?.[1]) || journey.days.length;
+  const bestMemory = journey.bestPhoto || journey.bestPlace || journey.tagline;
   return (
     <main className="story-page archive-detail">
+      {cinematic && <CinematicRoute stops={cinematic.stops} coordinates={cinematic.coordinates} />}
       <header className="site-header story-header">
         <Link href="/" className="brand">Journey Archive</Link>
-        <Link href="/#archive" className="back-link">← All journeys</Link>
+        <Link href="/#explore" className="back-link">← All journeys</Link>
       </header>
 
-      <section className="story-hero">
+      <section className="story-hero" id={`${journey.slug}-stop-0`}>
         <JourneyHeroImage slug={journey.slug} fallback={journey.image} />
         <div className="hero-shade" />
         <div className="story-hero-content">
@@ -30,7 +37,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      <section className="story-lead section">
+      <section className="story-lead section" id={`${journey.slug}-stop-1`}>
         <p className="section-index">{journey.area}</p>
         <div>
           <h2>{journey.tagline}</h2>
@@ -38,7 +45,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      <section className="archive-days section">
+      <section className="archive-days section cinematic-chapter" id={`${journey.slug}-stop-2`}>
         <p className="section-index">JOURNEY STORY</p>
         <div className="archive-day-grid">
           {journey.days.map((day) => (
@@ -54,17 +61,19 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      <JourneyGallery slug={journey.slug} placement="day" title="旅の時間" />
-      <JourneyGallery slug={journey.slug} placement="place" title="訪れた場所" />
+      <div id={`${journey.slug}-stop-3`}>
+        <JourneyGallery slug={journey.slug} placement="day" title="旅の時間" />
+        <JourneyGallery slug={journey.slug} placement="place" title="訪れた場所" />
 
-      <JourneyFoodCollection
-        slug={journey.slug}
-        foods={journey.foods.map((food) => ({
-          shop: food.name,
-          dish: food.dish,
-          price: food.price,
-        }))}
-      />
+        <JourneyFoodCollection
+          slug={journey.slug}
+          foods={journey.foods.map((food) => ({
+            shop: food.name,
+            dish: food.dish,
+            price: food.price,
+          }))}
+        />
+      </div>
 
       <JourneyGallery slug={journey.slug} placement="best" title="旅の景色" />
       <JourneyGallery slug={journey.slug} placement="selfie" title="旅先のセルフィー · Best 3" />
@@ -87,9 +96,28 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
 
       {journey.note && <aside className="archive-note section">{journey.note}</aside>}
 
+      <section className="journey-credits" id={`${journey.slug}-stop-4`}>
+        <div className="credits-kicker">
+          <span>JOURNEY {journey.number}</span>
+          <span>{journey.title}</span>
+        </div>
+        <p className="section-index">END CREDITS</p>
+        <h2>{journey.tagline}</h2>
+        <div className="credits-grid">
+          <article><strong>{String(dayCount).padStart(2, "0")}</strong><span>Days</span></article>
+          <article><strong>{String(locationCount).padStart(2, "0")}</strong><span>Recorded moments</span></article>
+          <article><strong>{String(journey.foods.length).padStart(2, "0")}</strong><span>Food records</span></article>
+          <article><strong>¥{journey.totalCost.toLocaleString("ja-JP")}</strong><span>Recorded cost</span></article>
+        </div>
+        <div className="credit-memory">
+          <span>BEST MEMORY</span>
+          <p>{bestMemory}</p>
+        </div>
+      </section>
+
       <section className="closing section">
         <p>{journey.tagline}</p>
-        <Link href="/#archive">Back to archive →</Link>
+        <Link href="/#explore">Back to archive →</Link>
       </section>
     </main>
   );
