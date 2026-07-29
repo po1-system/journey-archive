@@ -166,6 +166,39 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .map-legend span { display: flex; align-items: center; gap: 8px; }
 .map-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: #252522; }
 .map-legend .visited-dot { background: var(--gold); }
+.constellation-shell { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: clamp(28px, 5vw, 74px); align-items: stretch; }
+.constellation-map { min-height: 720px; isolation: isolate; background: radial-gradient(circle at 54% 45%, rgba(170,149,109,.08), transparent 34%), linear-gradient(145deg, rgba(255,255,255,.018), transparent 58%); }
+.constellation-map .japan-map { z-index: 1; opacity: .72; filter: drop-shadow(0 28px 34px rgba(0,0,0,.58)); }
+.constellation-map .map-prefecture path { fill: #181817; stroke: #55534e; opacity: .82; }
+.constellation-map .map-prefecture.visited path { fill: rgba(170,149,109,.3); stroke: #b9a57c; filter: none; }
+.memory-constellation { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.memory-constellation polyline { fill: none; stroke: rgba(203,180,132,.68); stroke-width: .22; stroke-dasharray: 1.2 1.2; vector-effect: non-scaling-stroke; filter: url("#memory-glow"); animation: constellationDraw 3.2s ease both; }
+@keyframes constellationDraw { from { stroke-dashoffset: 40; opacity: 0; } to { stroke-dashoffset: 0; opacity: 1; } }
+.memory-nodes { position: absolute; z-index: 4; inset: 0; pointer-events: none; }
+.memory-nodes button { position: absolute; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #c1b18f; transform: translate(-50%, -50%); cursor: pointer; pointer-events: auto; }
+.memory-nodes button i { position: absolute; inset: 12px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 5px rgba(193,177,143,.1), 0 0 18px currentColor; transition: inset .4s, box-shadow .4s; }
+.memory-nodes button span { position: absolute; top: -7px; left: 25px; font: 400 8px Georgia, serif; letter-spacing: .08em; }
+.memory-nodes button:hover i, .memory-nodes button.active i { inset: 9px; box-shadow: 0 0 0 8px rgba(193,177,143,.12), 0 0 30px currentColor; }
+.memory-nodes button.active { color: #f0dcae; }
+.memory-nodes button.active::after { content: ""; position: absolute; inset: 3px; border: 1px solid currentColor; border-radius: 50%; animation: memoryPulse 2.2s ease-out infinite; }
+@keyframes memoryPulse { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(1.45); opacity: 0; } }
+.map-scan { position: absolute; z-index: 3; top: 12%; bottom: 12%; left: 0; width: 1px; background: linear-gradient(transparent, rgba(224,205,163,.65), transparent); box-shadow: 0 0 26px rgba(224,205,163,.26); opacity: .42; animation: mapScan 9s ease-in-out infinite; pointer-events: none; }
+@keyframes mapScan { 0%, 100% { left: 12%; opacity: 0; } 15%, 85% { opacity: .42; } 50% { left: 88%; } }
+.memory-console { min-height: 100%; padding: 34px 0; display: flex; flex-direction: column; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.memory-console-head { display: flex; justify-content: space-between; color: var(--muted); font-size: 7px; letter-spacing: .18em; }
+.memory-console-head b { color: var(--gold); font: 400 11px Georgia, serif; }
+.memory-prefecture { margin: auto 0 12px; color: var(--gold); font-size: 9px; letter-spacing: .2em; }
+.memory-console h3 { margin: 0; font: 400 clamp(34px, 4vw, 56px)/1.2 Georgia, "Yu Mincho", serif; letter-spacing: -.035em; }
+.memory-date { margin: 25px 0 8px; color: var(--ink); font: 400 11px Georgia, serif; letter-spacing: .09em; }
+.memory-area { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.memory-pulse { display: flex; align-items: center; gap: 9px; margin: 34px 0; color: #77746e; font-size: 7px; letter-spacing: .16em; }
+.memory-pulse i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 12px var(--gold); animation: memoryPulseDot 1.8s ease-in-out infinite; }
+@keyframes memoryPulseDot { 50% { opacity: .28; } }
+.memory-console > a { display: flex; justify-content: space-between; padding: 17px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--ink); font-size: 10px; letter-spacing: .12em; }
+.memory-sequence { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-top: 28px; }
+.memory-sequence button { aspect-ratio: 1; padding: 0; border: 1px solid var(--line); background: transparent; color: #69665f; font: 400 8px Georgia, serif; cursor: pointer; transition: color .3s, border-color .3s, background .3s; }
+.memory-sequence button.active { border-color: var(--gold); background: rgba(170,149,109,.12); color: var(--ink); }
+.constellation-legend { margin-left: auto; letter-spacing: .12em; text-transform: uppercase; }
 
 .ranking-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 10vw; }
 .ranking-label { margin: 0 0 18px; color: var(--gold); font-size: 9px; letter-spacing: .18em; }
@@ -304,6 +337,11 @@ html[data-journey-tone="sunset"] .cinematic-sunset { filter: saturate(1.08) sepi
   .stat-grid article { min-height: 150px; border-right: 0; border-bottom: 1px solid var(--line); }
   .exif-cta { align-items: start; flex-direction: column; }
   .map-layout { grid-template-columns: 1fr; gap: 55px; }
+  .constellation-shell { grid-template-columns: 1fr; }
+  .constellation-map { min-height: 620px; }
+  .memory-console { min-height: 410px; padding: 28px 0; }
+  .memory-prefecture { margin-top: auto; }
+  .constellation-legend { display: none !important; }
   .map-frame { min-height: 600px; }
   .japan-map { width: min(78%, 430px); }
   .visited-prefectures { width: 100%; }
@@ -340,6 +378,10 @@ html[data-journey-tone="sunset"] .cinematic-sunset { filter: saturate(1.08) sepi
   .filter-bar { flex-direction: column; }
   .filter-bar label { width: 100%; }
   .map-frame { min-height: 500px; }
+  .constellation-map { min-height: 510px; }
+  .memory-nodes button { width: 28px; height: 28px; }
+  .memory-nodes button i { inset: 10px; }
+  .memory-nodes button:hover i, .memory-nodes button.active i { inset: 8px; }
   .map-frame::before { inset: 18px; }
   .map-coordinate { top: 34px; left: 32px; }
   .map-signature { right: 28px; bottom: 28px; }

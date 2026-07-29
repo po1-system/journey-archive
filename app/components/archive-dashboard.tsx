@@ -23,10 +23,22 @@ const prefectureNames: Record<string, string> = {
   yamagata: "山形県", yamaguchi: "山口県", yamanashi: "山梨県",
 };
 
+const journeyPoints: Record<string, { x: number; y: number }> = {
+  kagawa: { x: 30, y: 69 },
+  fukuoka: { x: 16, y: 77 },
+  hiroshima: { x: 24, y: 65 },
+  okinawa: { x: 9, y: 92 },
+  wakayama: { x: 39, y: 72 },
+  ishikawa: { x: 45, y: 48 },
+  hakodate: { x: 81, y: 15 },
+  "mito-oarai": { x: 70, y: 61 },
+};
+
 export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourney[] }) {
   const allJourneys = useMemo(() => [...journeys, mitoJourney as ArchiveJourney], [journeys]);
   const [year, setYear] = useState("すべて");
   const [prefecture, setPrefecture] = useState("すべて");
+  const [activeJourneySlug, setActiveJourneySlug] = useState("mito-oarai");
   const years = [...new Set(allJourneys.map((journey) => journey.year))].sort();
   const prefectures = [...new Set(allJourneys.map((journey) => journey.prefecture))];
   const filtered = allJourneys.filter((journey) =>
@@ -37,6 +49,12 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
   const total = allJourneys.reduce((sum, journey) => sum + journey.totalCost, 0);
   const rankedPhotos = allJourneys.filter((journey) => journey.bestPhoto);
   const rankedFoods = allJourneys.filter((journey) => journey.bestFood);
+  const activeJourney = allJourneys.find((journey) => journey.slug === activeJourneySlug) ?? allJourneys[0];
+  const constellationPoints = allJourneys
+    .map((journey) => journeyPoints[journey.slug])
+    .filter(Boolean)
+    .map((point) => `${point.x},${point.y}`)
+    .join(" ");
 
   return (
     <>
@@ -79,13 +97,13 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
       <section className="map-section section" id="map">
         <div className="section-heading">
           <div>
-            <p className="section-index">004 — TRAVEL MAP</p>
+            <p className="section-index">004 — MEMORY CONSTELLATION</p>
             <h2>旅した日本</h2>
           </div>
-          <p>{visited.size} / 47 prefectures</p>
+          <p>{allJourneys.length} journeys · {visited.size} / 47 prefectures</p>
         </div>
-        <div className="map-layout">
-          <div className="map-frame">
+        <div className="constellation-shell">
+          <div className="map-frame constellation-map">
             <span className="map-coordinate">24° — 46° N</span>
             <svg className="japan-map" viewBox={japanMap.viewBox} role="img" aria-label={`訪問済み${visited.size}都道府県を色付けした日本地図`}>
               <defs>
@@ -118,18 +136,68 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
                 );
               })}
             </svg>
-            <span className="map-signature">JOURNEY ARCHIVE · JAPAN</span>
+            <svg className="memory-constellation" viewBox="0 0 100 100" aria-hidden="true">
+              <defs>
+                <filter id="memory-glow" x="-100%" y="-100%" width="300%" height="300%">
+                  <feGaussianBlur stdDeviation="1.2" result="glow" />
+                  <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+              </defs>
+              <polyline points={constellationPoints} />
+            </svg>
+            <div className="memory-nodes">
+              {allJourneys.map((journey) => {
+                const point = journeyPoints[journey.slug];
+                if (!point) return null;
+                return (
+                  <button
+                    key={journey.slug}
+                    className={journey.slug === activeJourney.slug ? "active" : ""}
+                    style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                    onClick={() => {
+                      setActiveJourneySlug(journey.slug);
+                      setPrefecture(journey.prefecture);
+                    }}
+                    aria-label={`${journey.number} ${journey.title}`}
+                  >
+                    <i />
+                    <span>{journey.number}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <span className="map-signature">MEMORIES CONNECTED · 2025 — ∞</span>
+            <span className="map-scan" />
           </div>
-          <div className="visited-prefectures">
-            <p>VISITED · {visited.size}</p>
-            {[...visited].map((name, index) => (
-              <button key={name} onClick={() => setPrefecture(name)}>
-                <span>{String(index + 1).padStart(2, "0")}</span>{name}
-              </button>
-            ))}
+          <div className="memory-console" aria-live="polite">
+            <div className="memory-console-head">
+              <span>SELECTED MEMORY</span>
+              <b>{activeJourney.number}</b>
+            </div>
+            <p className="memory-prefecture">{activeJourney.prefecture}</p>
+            <h3>{activeJourney.title}</h3>
+            <p className="memory-date">{activeJourney.date}</p>
+            <p className="memory-area">{activeJourney.area}</p>
+            <div className="memory-pulse"><i /><span>ARCHIVED</span></div>
+            <Link href={`/journeys/${activeJourney.slug}`}>記憶を開く <span>↗</span></Link>
+            <div className="memory-sequence">
+              {allJourneys.map((journey) => (
+                <button
+                  key={journey.slug}
+                  className={journey.slug === activeJourney.slug ? "active" : ""}
+                  onClick={() => setActiveJourneySlug(journey.slug)}
+                >
+                  {journey.number}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="map-legend"><span><i className="visited-dot" />訪問済み</span><span><i />未訪問</span></div>
+        <div className="map-legend">
+          <span><i className="visited-dot" />訪問済み</span>
+          <span><i />未訪問</span>
+          <span className="constellation-legend">01—08 · Journey sequence</span>
+        </div>
       </section>
 
       <section className="rankings section" id="rankings">
