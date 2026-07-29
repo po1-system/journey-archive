@@ -13,9 +13,9 @@ const foods = [
 const routeStops: JourneyStop[] = [
   { id: "mito-departure", number: "01", label: "品川", sublabel: "08:13 · Departure", tone: "dawn" },
   { id: "mito-ocean", number: "02", label: "大洗", sublabel: "Sea & Shrine", tone: "day" },
-  { id: "mito-sunset", number: "03", label: "千波湖", sublabel: "17:58 · Sunset", tone: "sunset" },
+  { id: "mito-sunset", number: "03", label: "千波湖", sublabel: "Day 1 · Sunset", tone: "sunset" },
   { id: "mito-garden", number: "04", label: "偕楽園", sublabel: "Green Silence", tone: "day" },
-  { id: "mito-credits", number: "05", label: "水戸", sublabel: "Journey End", tone: "night" },
+  { id: "mito-credits", number: "05", label: "水戸駅", sublabel: "17:53 · Departure", tone: "night" },
 ];
 
 export default function MitoOaraiPage() {

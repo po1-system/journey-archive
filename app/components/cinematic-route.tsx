@@ -9,8 +9,17 @@ export type JourneyStop = {
   sublabel: string;
   tone: "dawn" | "day" | "sunset" | "night";
 };
+export type CinematicKind = "route" | "places";
 
-export default function CinematicRoute({ stops, coordinates = ["36.3659° N", "140.4712° E"] }: { stops: JourneyStop[]; coordinates?: [string, string] }) {
+export default function CinematicRoute({
+  stops,
+  coordinates = ["36.3659° N", "140.4712° E"],
+  kind = "route",
+}: {
+  stops: JourneyStop[];
+  coordinates?: [string, string];
+  kind?: CinematicKind;
+}) {
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
 
@@ -44,7 +53,7 @@ export default function CinematicRoute({ stops, coordinates = ["36.3659° N", "1
   return (
     <aside className="cinematic-route" aria-label="旅の現在地">
       <div className="route-status">
-        <span>LIVE ROUTE</span>
+        <span>{kind === "route" ? "CONFIRMED ROUTE HIGHLIGHTS" : "CONFIRMED PLACES"}</span>
         <strong>{String(active + 1).padStart(2, "0")} / {String(stops.length).padStart(2, "0")}</strong>
       </div>
       <div className="route-track" aria-hidden="true">

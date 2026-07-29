@@ -21,7 +21,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
   const bestMemory = journey.bestPhoto || journey.bestPlace || journey.tagline;
   return (
     <main className="story-page archive-detail">
-      {cinematic && <CinematicRoute stops={cinematic.stops} coordinates={cinematic.coordinates} />}
+      {cinematic && <CinematicRoute stops={cinematic.stops} coordinates={cinematic.coordinates} kind={cinematic.kind} />}
       <header className="site-header story-header">
         <Link href="/" className="brand">Journey Archive</Link>
         <Link href="/#explore" className="back-link">← All journeys</Link>
