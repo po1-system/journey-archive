@@ -13,6 +13,7 @@ export type Journey = {
   price: string;
   year: number;
   totalCost: number;
+  status?: "planned";
   bestPhoto?: string;
   bestFood?: string;
   bestPlace?: string;
@@ -205,6 +206,48 @@ export const journeys: Journey[] = [
     ],
     note: "湯の川はキャンセル。市電・バス乗り放題券は未購入。",
     image: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=2200&q=88",
+  },
+  {
+    slug: "nagano",
+    number: "09",
+    prefecture: "長野県",
+    title: "長野",
+    area: "行程を準備中",
+    date: "2026.08.17 — 08.18",
+    duration: "1泊2日",
+    tagline: "次の景色へ向かう、夏の長野。",
+    intro: "2026年8月の長野への旅。写真、行程、食の記録は旅のあとにこのページへ加えていく。",
+    transport: ["交通情報を準備中"],
+    hotel: ["宿泊情報を準備中"],
+    price: "費用を準備中",
+    year: 2026,
+    totalCost: 0,
+    status: "planned",
+    days: [],
+    foods: [],
+    note: "予定の旅です。実施後、写真・訪問地・食事・費用を記録します。",
+    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2200&q=88",
+  },
+  {
+    slug: "sapporo-otaru",
+    number: "10",
+    prefecture: "北海道",
+    title: "札幌・小樽",
+    area: "札幌市・小樽市",
+    date: "2026.10.05 — 10.07",
+    duration: "2泊3日",
+    tagline: "北の街を歩く、秋の三日間。",
+    intro: "2026年10月の札幌・小樽への旅。旅のあと、写真を中心にその時間をこのページへ編み直していく。",
+    transport: ["交通情報を準備中"],
+    hotel: ["宿泊情報を準備中"],
+    price: "費用を準備中",
+    year: 2026,
+    totalCost: 0,
+    status: "planned",
+    days: [],
+    foods: [],
+    note: "予定の旅です。実施後、写真・訪問地・食事・費用を記録します。",
+    image: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=2200&q=88",
   },
 ];
 

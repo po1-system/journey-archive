@@ -6,7 +6,7 @@ import japanMap from "@svg-maps/japan";
 import type { Journey } from "../data/journeys";
 import { mitoJourney } from "../archive-config";
 
-type ArchiveJourney = Pick<Journey, "slug" | "number" | "prefecture" | "title" | "area" | "date" | "duration" | "year" | "totalCost" | "image" | "bestPhoto" | "bestFood" | "bestPlace">;
+type ArchiveJourney = Pick<Journey, "slug" | "number" | "prefecture" | "title" | "area" | "date" | "duration" | "year" | "totalCost" | "image" | "bestPhoto" | "bestFood" | "bestPlace" | "status">;
 
 const prefectureNames: Record<string, string> = {
   aichi: "愛知県", akita: "秋田県", aomori: "青森県", chiba: "千葉県",
@@ -36,6 +36,8 @@ const journeyPoints: Record<string, { x: number; y: number }> = {
 
 export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourney[] }) {
   const allJourneys = useMemo(() => [...journeys, mitoJourney as ArchiveJourney], [journeys]);
+  const completedJourneys = allJourneys.filter((journey) => journey.status !== "planned");
+  const plannedJourneys = allJourneys.filter((journey) => journey.status === "planned");
   const [year, setYear] = useState("すべて");
   const [prefecture, setPrefecture] = useState("すべて");
   const [activeJourneySlug, setActiveJourneySlug] = useState("mito-oarai");
@@ -46,16 +48,16 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
     (year === "すべて" || journey.year === Number(year)) &&
     (prefecture === "すべて" || journey.prefecture === prefecture)
   );
-  const visited = new Set(allJourneys.map((journey) => journey.prefecture));
-  const total = allJourneys.reduce((sum, journey) => sum + journey.totalCost, 0);
-  const rankedPhotos = allJourneys.filter((journey) => journey.bestPhoto);
-  const rankedFoods = allJourneys.filter((journey) => journey.bestFood);
-  const activeJourney = allJourneys.find((journey) => journey.slug === activeJourneySlug) ?? allJourneys[0];
-  const activeJourneyIndex = allJourneys.findIndex((journey) => journey.slug === activeJourney.slug);
-  const displayPoints = allJourneys.map((journey, index) =>
+  const visited = new Set(completedJourneys.map((journey) => journey.prefecture));
+  const total = completedJourneys.reduce((sum, journey) => sum + journey.totalCost, 0);
+  const rankedPhotos = completedJourneys.filter((journey) => journey.bestPhoto);
+  const rankedFoods = completedJourneys.filter((journey) => journey.bestFood);
+  const activeJourney = completedJourneys.find((journey) => journey.slug === activeJourneySlug) ?? completedJourneys[0];
+  const activeJourneyIndex = completedJourneys.findIndex((journey) => journey.slug === activeJourney.slug);
+  const displayPoints = completedJourneys.map((journey, index) =>
     constellationMode === "geography"
       ? journeyPoints[journey.slug]
-      : { x: 10 + index * (80 / Math.max(1, allJourneys.length - 1)), y: 50 + Math.sin(index * 1.75) * 22 },
+      : { x: 10 + index * (80 / Math.max(1, completedJourneys.length - 1)), y: 50 + Math.sin(index * 1.75) * 22 },
   );
   const constellationPoints = displayPoints
     .filter(Boolean)
@@ -75,7 +77,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
             <p className="section-index">003 — JOURNEY INDEX</p>
             <h2>旅の記録</h2>
           </div>
-          <p>{filtered.length} journeys</p>
+          <p>{filtered.length} journeys · {plannedJourneys.length} upcoming</p>
         </div>
         <div className="filter-bar">
           <label>年
@@ -96,7 +98,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
             <Link href={`/journeys/${journey.slug}`} className="journey-card" key={journey.slug}>
               <div className="journey-card-image" style={{ backgroundImage: `url("${journey.image}")` }} />
               <div>
-                <span>{journey.number} · {journey.date}</span>
+                <span>{journey.status === "planned" ? "UPCOMING · " : ""}{journey.number} · {journey.date}</span>
                 <h3>{journey.prefecture}</h3>
                 <p>{journey.title} · {journey.duration}</p>
               </div>
@@ -111,7 +113,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
             <p className="section-index">004 — MEMORY CONSTELLATION</p>
             <h2>旅した日本</h2>
           </div>
-          <p>{allJourneys.length} journeys · {visited.size} / 47 prefectures</p>
+          <p>{completedJourneys.length} journeys · {visited.size} / 47 prefectures</p>
         </div>
         <div className="constellation-controls" aria-label="地図の表示方法">
           <button className={constellationMode === "geography" ? "active" : ""} onClick={() => setConstellationMode("geography")}>
@@ -168,7 +170,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
               <polyline className="memory-path-travelled" points={travelledPoints} />
             </svg>
             <div className="memory-nodes">
-              {allJourneys.map((journey, index) => {
+              {completedJourneys.map((journey, index) => {
                 const point = displayPoints[index];
                 if (!point) return null;
                 return (
@@ -208,7 +210,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
             <div className="memory-pulse"><i /><span>ARCHIVED</span></div>
             <Link href={`/journeys/${activeJourney.slug}`}>記憶を開く <span>↗</span></Link>
             <div className="memory-sequence">
-              {allJourneys.map((journey) => (
+              {completedJourneys.map((journey) => (
                 <button
                   key={journey.slug}
                   className={journey.slug === activeJourney.slug ? "active" : ""}
@@ -223,10 +225,10 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
               <input
                 type="range"
                 min="0"
-                max={allJourneys.length - 1}
+                max={completedJourneys.length - 1}
                 value={activeJourneyIndex}
                 onChange={(event) => {
-                  const journey = allJourneys[Number(event.target.value)];
+                  const journey = completedJourneys[Number(event.target.value)];
                   if (journey) {
                     setActiveJourneySlug(journey.slug);
                     setPrefecture(journey.prefecture);
@@ -281,10 +283,10 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
           <p>登録データから自動集計</p>
         </div>
         <div className="stat-grid">
-          <article><span>Journeys</span><strong>{allJourneys.length}</strong><small>旅行</small></article>
+          <article><span>Journeys</span><strong>{completedJourneys.length}</strong><small>実施済みの旅行</small></article>
           <article><span>Prefectures</span><strong>{visited.size}</strong><small>都道府県</small></article>
           <article><span>Recorded cost</span><strong>¥{total.toLocaleString("ja-JP")}</strong><small>現在の登録合計</small></article>
-          <article><span>Average</span><strong>¥{Math.round(total / allJourneys.length).toLocaleString("ja-JP")}</strong><small>1旅行あたり</small></article>
+          <article><span>Average</span><strong>¥{Math.round(total / completedJourneys.length).toLocaleString("ja-JP")}</strong><small>1旅行あたり</small></article>
         </div>
         <p className="privacy-note">費用は現在登録されている予約費用・総費用の合計です。現地支出が未整理の旅は、追記すると自動で更新されます。</p>
       </section>

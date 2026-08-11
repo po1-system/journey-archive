@@ -15,7 +15,8 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const journey = getJourney(slug);
   if (!journey) notFound();
-  const cinematic = getCinematicPreset(journey.slug);
+  const isPlanned = journey.status === "planned";
+  const cinematic = isPlanned ? undefined : getCinematicPreset(journey.slug);
   const locationCount = new Set(journey.days.flatMap((day) => day.items)).size;
   const dayCount = Number(journey.duration.match(/(\d+)日/)?.[1]) || journey.days.length;
   const bestMemory = journey.bestPhoto || journey.bestPlace || journey.tagline;
@@ -31,7 +32,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
         <JourneyHeroImage slug={journey.slug} fallback={journey.image} />
         <div className="hero-shade" />
         <div className="story-hero-content">
-          <p className="eyebrow">Journey {journey.number} · {journey.prefecture}</p>
+          <p className="eyebrow">{isPlanned ? "Planned Journey" : "Journey"} {journey.number} · {journey.prefecture}</p>
           <h1>{journey.title}</h1>
           <p>{journey.date} · {journey.duration}</p>
         </div>
@@ -45,39 +46,52 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      <section className="archive-days section cinematic-chapter" id={`${journey.slug}-stop-2`}>
-        <p className="section-index">JOURNEY STORY</p>
-        <div className="archive-day-grid">
-          {journey.days.map((day) => (
-            <article key={day.title}>
-              <h2>{day.title}</h2>
-              <ol>
-                {day.items.map((item, index) => (
-                  <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>
-                ))}
-              </ol>
-            </article>
-          ))}
-        </div>
-      </section>
+      {isPlanned ? (
+        <section className="planned-journey-note section">
+          <p className="section-index">THE NEXT CHAPTER</p>
+          <div>
+            <span>PLANNING</span>
+            <h2>写真とともに、旅を完成させる。</h2>
+            <p>現時点では日程のみを記録しています。旅のあと、写真を追加すると「旅の時間」「訪れた場所」「食の記録」へ整理されます。</p>
+          </div>
+        </section>
+      ) : (
+        <>
+          <section className="archive-days section cinematic-chapter" id={`${journey.slug}-stop-2`}>
+            <p className="section-index">JOURNEY STORY</p>
+            <div className="archive-day-grid">
+              {journey.days.map((day) => (
+                <article key={day.title}>
+                  <h2>{day.title}</h2>
+                  <ol>
+                    {day.items.map((item, index) => (
+                      <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>
+                    ))}
+                  </ol>
+                </article>
+              ))}
+            </div>
+          </section>
 
-      <div id={`${journey.slug}-stop-3`}>
-        <JourneyGallery slug={journey.slug} placement="day" title="旅の時間" />
-        <JourneyGallery slug={journey.slug} placement="place" title="訪れた場所" />
+          <div id={`${journey.slug}-stop-3`}>
+            <JourneyGallery slug={journey.slug} placement="day" title="旅の時間" />
+            <JourneyGallery slug={journey.slug} placement="place" title="訪れた場所" />
 
-        <JourneyFoodCollection
-          slug={journey.slug}
-          foods={journey.foods.map((food) => ({
-            shop: food.name,
-            dish: food.dish,
-            price: food.price,
-          }))}
-        />
-      </div>
+            <JourneyFoodCollection
+              slug={journey.slug}
+              foods={journey.foods.map((food) => ({
+                shop: food.name,
+                dish: food.dish,
+                price: food.price,
+              }))}
+            />
+          </div>
 
-      <JourneyGallery slug={journey.slug} placement="best" title="旅の景色" />
-      <JourneyGallery slug={journey.slug} placement="selfie" title="旅先のセルフィー · Best 3" />
-      <JourneyGallery slug={journey.slug} placement="gallery" />
+          <JourneyGallery slug={journey.slug} placement="best" title="旅の景色" />
+          <JourneyGallery slug={journey.slug} placement="selfie" title="旅先のセルフィー · Best 3" />
+          <JourneyGallery slug={journey.slug} placement="gallery" />
+        </>
+      )}
 
       <section className="travel-data section">
         <div>
@@ -90,7 +104,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
           <div><dt>訪問エリア</dt><dd>{journey.area}</dd></div>
           {journey.transport.map((item) => <div key={item}><dt>交通</dt><dd>{item}</dd></div>)}
           {journey.hotel.map((item) => <div key={item}><dt>宿泊</dt><dd>{item}</dd></div>)}
-          <div><dt>予約費用</dt><dd>{journey.price}</dd></div>
+          <div><dt>{isPlanned ? "費用" : "予約費用"}</dt><dd>{journey.price}</dd></div>
         </dl>
       </section>
 
@@ -101,13 +115,13 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
           <span>JOURNEY {journey.number}</span>
           <span>{journey.title}</span>
         </div>
-        <p className="section-index">END CREDITS</p>
+          <p className="section-index">{isPlanned ? "JOURNEY AHEAD" : "END CREDITS"}</p>
         <h2>{journey.tagline}</h2>
         <div className="credits-grid">
           <article><strong>{String(dayCount).padStart(2, "0")}</strong><span>Days</span></article>
-          <article><strong>{String(locationCount).padStart(2, "0")}</strong><span>Recorded moments</span></article>
-          <article><strong>{String(journey.foods.length).padStart(2, "0")}</strong><span>Food records</span></article>
-          <article><strong>¥{journey.totalCost.toLocaleString("ja-JP")}</strong><span>Recorded cost</span></article>
+          <article><strong>{isPlanned ? "—" : String(locationCount).padStart(2, "0")}</strong><span>{isPlanned ? "Places to discover" : "Recorded moments"}</span></article>
+          <article><strong>{isPlanned ? "—" : String(journey.foods.length).padStart(2, "0")}</strong><span>{isPlanned ? "Food to discover" : "Food records"}</span></article>
+          <article><strong>{isPlanned ? "—" : `¥${journey.totalCost.toLocaleString("ja-JP")}`}</strong><span>{isPlanned ? "Cost to be added" : "Recorded cost"}</span></article>
         </div>
         <div className="credit-memory">
           <span>BEST MEMORY</span>
