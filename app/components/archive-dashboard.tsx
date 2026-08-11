@@ -35,7 +35,10 @@ const journeyPoints: Record<string, { x: number; y: number }> = {
 };
 
 export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourney[] }) {
-  const allJourneys = useMemo(() => [...journeys, mitoJourney as ArchiveJourney], [journeys]);
+  const allJourneys = useMemo(
+    () => [...journeys, mitoJourney as ArchiveJourney].sort((a, b) => Number(a.number) - Number(b.number)),
+    [journeys],
+  );
   const completedJourneys = allJourneys.filter((journey) => journey.status !== "planned");
   const plannedJourneys = allJourneys.filter((journey) => journey.status === "planned");
   const [year, setYear] = useState("すべて");
