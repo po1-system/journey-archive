@@ -2,6 +2,7 @@ import Link from "next/link";
 import JourneyGallery from "../../components/journey-gallery";
 import JourneyHeroImage from "../../components/journey-hero-image";
 import JourneyFoodCollection from "../../components/journey-food-collection";
+import JourneyVideo from "../../components/journey-video";
 import CinematicRoute, { type JourneyStop } from "../../components/cinematic-route";
 
 const foods = [
@@ -125,6 +126,7 @@ export default function MitoOaraiPage() {
       <JourneyGallery slug="mito-oarai" placement="best" title="旅の景色" />
       <JourneyGallery slug="mito-oarai" placement="selfie" title="旅先のセルフィー · Best 3" />
       <JourneyGallery slug="mito-oarai" placement="gallery" />
+      <JourneyVideo slug="mito-oarai" />
 
       <section className="travel-data section">
         <div>

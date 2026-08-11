@@ -13,7 +13,11 @@ type PhotoRecord = {
   caption?: string;
   placement?: string;
   rank?: number;
+  mediaType?: "image" | "video";
 };
+
+const maxImageBytes = 8_000_000;
+const maxVideoBytes = 20_000_000;
 
 const allowedOrigins = new Set([
   "https://po1-system.github.io",
@@ -56,13 +60,37 @@ export default {
       return json(manifest, 200, origin, "no-store");
     }
 
-    if (request.method === "GET" && url.pathname.startsWith("/photo/")) {
-      const id = decodeURIComponent(url.pathname.slice("/photo/".length));
-      const stored = await env.JOURNEY_PHOTOS.getWithMetadata<ArrayBuffer, { contentType?: string }>(`photo:${id}`, "arrayBuffer");
+    if (request.method === "GET" && (url.pathname.startsWith("/photo/") || url.pathname.startsWith("/media/"))) {
+      const isMedia = url.pathname.startsWith("/media/");
+      const id = decodeURIComponent(url.pathname.slice(isMedia ? "/media/".length : "/photo/".length));
+      const stored = await env.JOURNEY_PHOTOS.getWithMetadata<ArrayBuffer, { contentType?: string }>(`${isMedia ? "media" : "photo"}:${id}`, "arrayBuffer");
       if (!stored.value) return new Response("Not found", { status: 404, headers: cors(origin) });
+      const range = request.headers.get("Range");
+      const contentType = stored.metadata?.contentType ?? (isMedia ? "video/mp4" : "image/webp");
+      if (isMedia && range) {
+        const match = /^bytes=(\d+)-(\d*)$/.exec(range);
+        if (match) {
+          const start = Number(match[1]);
+          const end = Math.min(match[2] ? Number(match[2]) : stored.value.byteLength - 1, stored.value.byteLength - 1);
+          if (start <= end) {
+            return new Response(stored.value.slice(start, end + 1), {
+              status: 206,
+              headers: {
+                "Content-Type": contentType,
+                "Content-Range": `bytes ${start}-${end}/${stored.value.byteLength}`,
+                "Content-Length": String(end - start + 1),
+                "Accept-Ranges": "bytes",
+                "Cache-Control": "public, max-age=31536000, immutable",
+                ...cors(origin),
+              },
+            });
+          }
+        }
+      }
       return new Response(stored.value, {
         headers: {
-          "Content-Type": stored.metadata?.contentType ?? "image/webp",
+          "Content-Type": contentType,
+          ...(isMedia ? { "Accept-Ranges": "bytes" } : {}),
           "Cache-Control": "public, max-age=31536000, immutable",
           ...cors(origin),
         },
@@ -85,11 +113,16 @@ export default {
 
       for (const photo of additions) {
         const file = form.get(photo.id);
-        if (!(file instanceof File) || file.size > 8_000_000) {
-          return json({ error: `${photo.id}の画像がないか、サイズが大きすぎます。` }, 400, origin);
+        const isVideo = photo.mediaType === "video";
+        const maxBytes = isVideo ? maxVideoBytes : maxImageBytes;
+        if (!(file instanceof File) || file.size > maxBytes) {
+          return json({ error: `${photo.id}の${isVideo ? "動画" : "画像"}がないか、サイズが大きすぎます。` }, 400, origin);
         }
-        await env.JOURNEY_PHOTOS.put(`photo:${photo.id}`, await file.arrayBuffer(), {
-          metadata: { contentType: file.type || "image/webp" },
+        if (isVideo && file.type !== "video/mp4") {
+          return json({ error: "動画はMP4形式で公開してください。" }, 400, origin);
+        }
+        await env.JOURNEY_PHOTOS.put(`${isVideo ? "media" : "photo"}:${photo.id}`, await file.arrayBuffer(), {
+          metadata: { contentType: file.type || (isVideo ? "video/mp4" : "image/webp") },
         });
       }
 

@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import photoManifest from "../data/photo-manifest.json";
 
-export type PhotoPlacement = "hero" | "day" | "food" | "place" | "best" | "selfie" | "gallery";
+export type PhotoPlacement = "hero" | "day" | "food" | "place" | "best" | "selfie" | "gallery" | "motion";
+export type MediaType = "image" | "video";
+export type VideoPlacement = "hero" | "motion";
 
 export type PublishedPhoto = {
   id: string;
@@ -15,6 +17,7 @@ export type PublishedPhoto = {
   caption?: string;
   placement?: PhotoPlacement;
   rank?: number;
+  mediaType?: MediaType;
 };
 
 export const PHOTO_API = "https://journey-archive-photo-publisher.po1-system.workers.dev";
@@ -38,7 +41,7 @@ export function usePublishedPhotos() {
 export default function JourneyGallery({ slug, placement = "gallery", title }: { slug: string; placement?: PhotoPlacement; title?: string }) {
   const publishedPhotos = usePublishedPhotos();
   const photos = publishedPhotos
-    .filter((photo) => photo.journey === slug && (photo.placement ?? "gallery") === placement)
+    .filter((photo) => photo.mediaType !== "video" && photo.journey === slug && (photo.placement ?? "gallery") === placement)
     .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
     .slice(0, placement === "selfie" ? 3 : placement === "best" ? 1 : undefined);
   const basePath = process.env.GITHUB_ACTIONS === "true" ? "/journey-archive" : "";

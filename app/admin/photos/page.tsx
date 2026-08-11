@@ -43,6 +43,8 @@ const journeyOptions = [
   { slug: "ishikawa", label: "石川｜金沢・小松", start: "2026-05-11", end: "2026-05-12" },
   { slug: "hakodate", label: "北海道｜函館", start: "2026-06-15", end: "2026-06-17" },
   { slug: "mito-oarai", label: "茨城｜水戸・大洗", start: "2026-07-27", end: "2026-07-28" },
+  { slug: "nagano", label: "長野｜予定", start: "2026-08-17", end: "2026-08-18" },
+  { slug: "sapporo-otaru", label: "札幌・小樽｜予定", start: "2026-10-05", end: "2026-10-07" },
 ];
 
 const knownPlaces = [
@@ -260,7 +262,7 @@ export default function PhotoPublisherPage() {
     <main className="photo-admin-page">
       <header className="site-header story-header">
         <Link href="/" className="brand">Journey Archive</Link>
-        <Link href="/" className="back-link">← Public site</Link>
+        <span className="admin-nav"><Link href="/admin/videos">動画を公開</Link><Link href="/" className="back-link">← Public site</Link></span>
       </header>
       <section className="admin-hero">
         <p className="eyebrow">Private Photo Publisher</p>
