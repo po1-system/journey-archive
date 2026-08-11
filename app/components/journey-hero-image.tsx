@@ -3,8 +3,9 @@
 import { usePublishedPhotos } from "./journey-gallery";
 
 export default function JourneyHeroImage({ slug, fallback }: { slug: string; fallback?: string }) {
-  const photo = usePublishedPhotos().find((item) => item.journey === slug && item.placement === "hero" && item.mediaType !== "video");
-  const video = usePublishedPhotos().find((item) => item.journey === slug && item.placement === "hero" && item.mediaType === "video");
+  const media = usePublishedPhotos();
+  const photo = media.find((item) => item.journey === slug && item.placement === "hero" && item.mediaType !== "video");
+  const video = media.find((item) => item.journey === slug && item.placement === "hero" && item.mediaType === "video");
   const basePath = process.env.NODE_ENV === "production" ? "/journey-archive" : "";
   const source = photo?.src
     ? photo.src.startsWith("http") ? photo.src : `${basePath}${photo.src}`
