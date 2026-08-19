@@ -20,7 +20,7 @@ export type Journey = {
   days: { title: string; items: string[] }[];
   foods: { name: string; dish: string; price?: string }[];
   note?: string;
-  image: string;
+  image?: string;
 };
 
 export const journeys: Journey[] = [
@@ -44,7 +44,6 @@ export const journeys: Journey[] = [
     ],
     foods: [],
     note: "詳しい行程と食事は写真・記録との照合後に追加予定。",
-    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2200&q=88",
   },
   {
     slug: "fukuoka",
@@ -72,7 +71,6 @@ export const journeys: Journey[] = [
       { name: "ウエスト 生そば春吉店", dish: "もつ鍋・塩ホルモン唐揚げ・牡蠣フライ・ざるうどん", price: "確認済み合計 ¥2,260" },
       { name: "博多の海鮮料理 喜水丸", dish: "海鮮料理・明太子" },
     ],
-    image: "https://images.unsplash.com/photo-1576675466969-38eeae4b41f6?auto=format&fit=crop&w=2200&q=88",
   },
   {
     slug: "hiroshima",
@@ -102,7 +100,6 @@ export const journeys: Journey[] = [
       { name: "キング軒", dish: "汁なし担々麺" },
       { name: "月あかり", dish: "あなごめし" },
     ],
-    image: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=2200&q=88",
   },
   {
     slug: "okinawa",
@@ -133,7 +130,6 @@ export const journeys: Journey[] = [
       { name: "A&W", dish: "カーリーポテトフライ", price: "¥580" },
       { name: "ロイヤルスナックコート", dish: "ソーメンチャンプル", price: "¥1,738" },
     ],
-    image: "https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=2200&q=88",
   },
   {
     slug: "wakayama",
@@ -153,7 +149,6 @@ export const journeys: Journey[] = [
     days: [{ title: "予定から実績へ", items: ["白浜町", "和歌山市", "航空便運航中止", "鉄道へ切り替えて帰京"] }],
     foods: [],
     note: "詳細な訪問スポットと食事は記録照合後に追加予定。",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2200&q=88",
   },
   {
     slug: "ishikawa",
@@ -173,7 +168,6 @@ export const journeys: Journey[] = [
     days: [{ title: "金沢と小松", items: ["金沢市", "小松市"] }],
     foods: [],
     note: "詳しい行程・訪問地・食事は写真と記録の照合後に追加予定。",
-    image: "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=2200&q=88",
   },
   {
     slug: "hakodate",
@@ -205,28 +199,25 @@ export const journeys: Journey[] = [
       { name: "函館市内", dish: "回転寿司" },
     ],
     note: "湯の川はキャンセル。市電・バス乗り放題券は未購入。",
-    image: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=2200&q=88",
   },
   {
     slug: "nagano",
     number: "09",
     prefecture: "長野県",
     title: "長野",
-    area: "行程を準備中",
+    area: "詳細を整理中",
     date: "2026.08.17 — 08.18",
     duration: "1泊2日",
     tagline: "次の景色へ向かう、夏の長野。",
-    intro: "2026年8月の長野への旅。写真、行程、食の記録は旅のあとにこのページへ加えていく。",
-    transport: ["交通情報を準備中"],
-    hotel: ["宿泊情報を準備中"],
-    price: "費用を準備中",
+    intro: "2026年8月に訪れた長野への旅。写真、行程、食の記録をこれからこのページへ加えていく。",
+    transport: ["交通情報を整理中"],
+    hotel: ["宿泊情報を整理中"],
+    price: "費用を整理中",
     year: 2026,
     totalCost: 0,
-    status: "planned",
     days: [],
     foods: [],
-    note: "予定の旅です。実施後、写真・訪問地・食事・費用を記録します。",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2200&q=88",
+    note: "写真・訪問地・食事・費用を整理中です。",
   },
   {
     slug: "sapporo-otaru",
@@ -247,7 +238,6 @@ export const journeys: Journey[] = [
     days: [],
     foods: [],
     note: "予定の旅です。実施後、写真・訪問地・食事・費用を記録します。",
-    image: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=2200&q=88",
   },
 ];
 

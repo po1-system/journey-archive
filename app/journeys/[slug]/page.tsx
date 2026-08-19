@@ -7,6 +7,7 @@ import JourneyFoodCollection from "../../components/journey-food-collection";
 import JourneyVideo from "../../components/journey-video";
 import CinematicRoute from "../../components/cinematic-route";
 import { getCinematicPreset } from "../../data/cinematic-presets";
+import { getJourneyImage } from "../../data/site-images";
 
 export function generateStaticParams() {
   return journeys.map(({ slug }) => ({ slug }));
@@ -17,6 +18,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
   const journey = getJourney(slug);
   if (!journey) notFound();
   const isPlanned = journey.status === "planned";
+  const isUnrecorded = !isPlanned && journey.days.length === 0 && journey.foods.length === 0;
   const cinematic = isPlanned ? undefined : getCinematicPreset(journey.slug);
   const locationCount = new Set(journey.days.flatMap((day) => day.items)).size;
   const dayCount = Number(journey.duration.match(/(\d+)日/)?.[1]) || journey.days.length;
@@ -30,7 +32,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
       </header>
 
       <section className="story-hero" id={`${journey.slug}-stop-0`}>
-        <JourneyHeroImage slug={journey.slug} fallback={journey.image} />
+        <JourneyHeroImage slug={journey.slug} fallback={getJourneyImage(journey.slug).src ?? undefined} />
         <div className="hero-shade" />
         <div className="story-hero-content">
           <p className="eyebrow">{isPlanned ? "Planned Journey" : "Journey"} {journey.number} · {journey.prefecture}</p>
@@ -47,13 +49,13 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      {isPlanned ? (
+      {isPlanned || isUnrecorded ? (
         <section className="planned-journey-note section">
-          <p className="section-index">THE NEXT CHAPTER</p>
+          <p className="section-index">{isPlanned ? "THE NEXT CHAPTER" : "JOURNEY NOTES"}</p>
           <div>
-            <span>PLANNING</span>
-            <h2>写真とともに、旅を完成させる。</h2>
-            <p>現時点では日程のみを記録しています。旅のあと、写真を追加すると「旅の時間」「訪れた場所」「食の記録」へ整理されます。</p>
+            <span>{isPlanned ? "PLANNING" : "RECORDING"}</span>
+            <h2>{isPlanned ? "写真とともに、旅を完成させる。" : "写真とともに、旅を編み直す。"}</h2>
+            <p>{isPlanned ? "現時点では日程のみを記録しています。旅のあと、写真を追加すると「旅の時間」「訪れた場所」「食の記録」へ整理されます。" : "写真、訪問地、食事、費用を整理中です。写真を追加すると「旅の時間」「訪れた場所」「食の記録」へ表示されます。"}</p>
           </div>
         </section>
       ) : (

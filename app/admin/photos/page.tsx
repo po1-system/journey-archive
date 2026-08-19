@@ -43,7 +43,7 @@ const journeyOptions = [
   { slug: "ishikawa", label: "石川｜金沢・小松", start: "2026-05-11", end: "2026-05-12" },
   { slug: "hakodate", label: "北海道｜函館", start: "2026-06-15", end: "2026-06-17" },
   { slug: "mito-oarai", label: "茨城｜水戸・大洗", start: "2026-07-27", end: "2026-07-28" },
-  { slug: "nagano", label: "長野｜予定", start: "2026-08-17", end: "2026-08-18" },
+  { slug: "nagano", label: "長野｜実施済み・整理中", start: "2026-08-17", end: "2026-08-18" },
   { slug: "sapporo-otaru", label: "札幌・小樽｜予定", start: "2026-10-05", end: "2026-10-07" },
 ];
 

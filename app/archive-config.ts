@@ -10,11 +10,10 @@ export const mitoJourney = {
   duration: "1泊2日",
   year: 2026,
   totalCost: 31117,
-  image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2200&q=88",
   bestPhoto: "千波湖の夕焼け",
   bestFood: "らぁ麺ふじ田｜特製塩らぁ麺",
   bestPlace: "神磯の鳥居",
-} satisfies Partial<Journey> & Pick<Journey, "slug" | "number" | "prefecture" | "title" | "area" | "date" | "duration" | "year" | "totalCost" | "image">;
+} satisfies Partial<Journey> & Pick<Journey, "slug" | "number" | "prefecture" | "title" | "area" | "date" | "duration" | "year" | "totalCost">;
 
 export const prefectureRegions = [
   { name: "北海道", region: "北海道", x: 82, y: 5 },

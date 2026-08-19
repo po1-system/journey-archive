@@ -43,6 +43,8 @@ a { color: inherit; text-decoration: none; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; margin-bottom: clamp(46px, 6vw, 82px); gap: 30px; }
 .section-heading > p { color: var(--muted); font-size: 11px; letter-spacing: .1em; }
 .featured-image { display: block; width: 100%; aspect-ratio: 16/9; position: relative; background: linear-gradient(90deg, rgba(0,0,0,.35), transparent), url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2200&q=88") center/cover; overflow: hidden; }
+.featured-image.is-placeholder, .journey-card-image.is-placeholder { background: radial-gradient(circle at 24% 28%, rgba(170,149,109,.18), transparent 24%), linear-gradient(140deg, #1a1a18, #0a0a09 65%); }
+.featured-image.is-placeholder::before, .journey-card-image.is-placeholder::before { content: "PHOTO TO BE ADDED"; position: absolute; top: 22px; left: 22px; color: var(--gold); font-size: 8px; letter-spacing: .2em; }
 .featured-image::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.05); transition: background .5s; }
 .featured-image:hover::after { background: rgba(0,0,0,.2); }
 .featured-overlay { position: absolute; z-index: 2; left: 7%; bottom: 9%; }
@@ -60,6 +62,8 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .back-link { font-size: 10px; letter-spacing: .12em; }
 .story-hero { width: 100%; aspect-ratio: 16/9; max-height: 100svh; position: relative; overflow: hidden; }
 .story-hero-image, .story-hero-video { position: absolute; inset: 0; width: 100%; height: 100%; background: url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2400&q=90") center/cover; object-fit: cover; animation: slowZoom 18s ease-out forwards; }
+.story-hero-placeholder { display: grid; place-items: center; background: radial-gradient(circle at 38% 38%, rgba(170,149,109,.16), transparent 26%), linear-gradient(140deg, #1b1b19, #090909 70%); animation: none; }
+.story-hero-placeholder span { color: var(--gold); font-size: 9px; letter-spacing: .25em; }
 @keyframes slowZoom { to { transform: scale(1.07); } }
 .story-hero-content { position: absolute; z-index: 5; left: 7vw; bottom: 9vh; }
 .story-hero-content > p:last-child { letter-spacing: .15em; font-size: 11px; }
@@ -148,7 +152,7 @@ footer { margin: 50px 4.5vw 0; padding: 36px 0; border-top: 1px solid var(--line
 .filter-bar select { display: block; width: 100%; margin-top: 10px; padding: 13px 36px 13px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; color: var(--ink); font: inherit; appearance: auto; }
 .journey-card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(52px, 7vw, 100px) clamp(24px, 4vw, 58px); }
 .journey-card { display: block; border-bottom: 1px solid var(--line); padding-bottom: 28px; }
-.journey-card-image { aspect-ratio: 16/10; background-size: cover; background-position: center; filter: saturate(.72) contrast(.96); transition: filter .6s, transform .6s; }
+.journey-card-image { position: relative; aspect-ratio: 16/10; background-size: cover; background-position: center; filter: saturate(.72) contrast(.96); transition: filter .6s, transform .6s; }
 .journey-card:hover .journey-card-image { filter: saturate(.95) contrast(1); transform: scale(.992); }
 .journey-card > div:last-child { padding-top: 18px; }
 .journey-card span, .journey-card p { color: var(--muted); font-size: 9px; letter-spacing: .09em; }

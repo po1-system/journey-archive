@@ -1,6 +1,7 @@
 "use client";
 
 import { usePublishedPhotos } from "./journey-gallery";
+import { getJourneyImage } from "../data/site-images";
 
 export default function JourneyHeroImage({ slug, fallback }: { slug: string; fallback?: string }) {
   const media = usePublishedPhotos();
@@ -9,11 +10,13 @@ export default function JourneyHeroImage({ slug, fallback }: { slug: string; fal
   const basePath = process.env.NODE_ENV === "production" ? "/journey-archive" : "";
   const source = photo?.src
     ? photo.src.startsWith("http") ? photo.src : `${basePath}${photo.src}`
-    : fallback;
+    : fallback ?? getJourneyImage(slug).src ?? undefined;
 
   if (video) {
     const videoSource = video.src.startsWith("http") ? video.src : `https://journey-archive-photo-publisher.po1-system.workers.dev/media/${encodeURIComponent(video.id)}`;
     return <video className="story-hero-video" autoPlay muted loop playsInline preload="metadata" src={videoSource} />;
   }
-  return <div className="story-hero-image" style={source ? { backgroundImage: `url("${source}")` } : undefined} />;
+  return source
+    ? <div className="story-hero-image" style={{ backgroundImage: `url("${source}")` }} />
+    : <div className="story-hero-image story-hero-placeholder"><span>PHOTO TO BE ADDED</span></div>;
 }

@@ -25,7 +25,7 @@ const journeys = [
   ["ishikawa", "石川｜金沢・小松"],
   ["hakodate", "北海道｜函館"],
   ["mito-oarai", "茨城｜水戸・大洗"],
-  ["nagano", "長野｜予定"],
+  ["nagano", "長野｜実施済み・整理中"],
   ["sapporo-otaru", "札幌・小樽｜予定"],
 ] as const;
 

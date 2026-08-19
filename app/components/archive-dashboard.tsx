@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import japanMap from "@svg-maps/japan";
 import type { Journey } from "../data/journeys";
 import { mitoJourney } from "../archive-config";
+import { getJourneyImage } from "../data/site-images";
 
 type ArchiveJourney = Pick<Journey, "slug" | "number" | "prefecture" | "title" | "area" | "date" | "duration" | "year" | "totalCost" | "image" | "bestPhoto" | "bestFood" | "bestPlace" | "status">;
 
@@ -32,6 +33,7 @@ const journeyPoints: Record<string, { x: number; y: number }> = {
   ishikawa: { x: 45, y: 48 },
   hakodate: { x: 81, y: 15 },
   "mito-oarai": { x: 70, y: 61 },
+  nagano: { x: 56, y: 58 },
 };
 
 export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourney[] }) {
@@ -99,7 +101,10 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
         <div className="journey-card-grid">
           {filtered.map((journey) => (
             <Link href={`/journeys/${journey.slug}`} className="journey-card" key={journey.slug}>
-              <div className="journey-card-image" style={{ backgroundImage: `url("${journey.image}")` }} />
+              <div
+                className={`journey-card-image${getJourneyImage(journey.slug).src ? "" : " is-placeholder"}`}
+                style={getJourneyImage(journey.slug).src ? { backgroundImage: `url("${getJourneyImage(journey.slug).src}")` } : undefined}
+              />
               <div>
                 <span>{journey.status === "planned" ? "UPCOMING · " : ""}{journey.number} · {journey.date}</span>
                 <h3>{journey.prefecture}</h3>
@@ -129,7 +134,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
         </div>
         <div className="constellation-shell">
           <div className={`map-frame constellation-map mode-${constellationMode}`}>
-            <div className="memory-ambient-image" style={{ backgroundImage: `url("${activeJourney.image}")` }} />
+            <div className="memory-ambient-image" style={getJourneyImage(activeJourney.slug).src ? { backgroundImage: `url("${getJourneyImage(activeJourney.slug).src}")` } : undefined} />
             <span className="map-coordinate">24° — 46° N</span>
             <svg className="japan-map" viewBox={japanMap.viewBox} role="img" aria-label={`訪問済み${visited.size}都道府県を色付けした日本地図`}>
               <defs>
@@ -245,7 +250,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
         <div className="map-legend">
           <span><i className="visited-dot" />訪問済み</span>
           <span><i />未訪問</span>
-          <span className="constellation-legend">01—08 · Journey sequence</span>
+          <span className="constellation-legend">01—{completedJourneys.at(-1)?.number ?? "—"} · Journey sequence</span>
         </div>
       </section>
 

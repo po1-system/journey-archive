@@ -1,27 +1,13 @@
 import Link from "next/link";
-import { journeys } from "./data/journeys";
+import { getJourney, journeys } from "./data/journeys";
+import { featuredJourneySlug, getJourneyImage, homeHeroImages } from "./data/site-images";
 import ArchiveDashboard from "./components/archive-dashboard";
 
-const heroImages = [
-  {
-    src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2400&q=88",
-    label: "海辺に残る、旅の記憶",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=2400&q=88",
-    label: "静かな夕暮れを歩く",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=2400&q=88",
-    label: "まだ見ぬ景色の先へ",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=2400&q=88",
-    label: "歴史と日常のあいだ",
-  },
-];
-
 export default function Home() {
+  const featuredJourney = getJourney(featuredJourneySlug);
+  const featuredImage = getJourneyImage(featuredJourneySlug);
+  const activeHeroImages = homeHeroImages.filter((image) => image.src);
+  if (!featuredJourney) return null;
   return (
     <main>
       <header className="site-header">
@@ -30,19 +16,20 @@ export default function Home() {
           <a href="#journeys">Journeys</a>
           <a href="#map">Map</a>
           <a href="#rankings">Best</a>
-          <Link href="/journeys/mito-oarai">Featured</Link>
+          <Link href={`/journeys/${featuredJourney.slug}`}>Featured</Link>
         </nav>
       </header>
 
       <section className="hero" aria-label="旅の写真スライドショー">
         <div className="hero-slides" aria-hidden="true">
-          {heroImages.map((image, index) => (
+          {activeHeroImages.map((image, index) => (
             <div
               className="hero-slide"
               key={image.src}
               style={{
                 backgroundImage: `url("${image.src}")`,
                 animationDelay: `${index * 7}s`,
+                animationDuration: `${Math.max(activeHeroImages.length, 1) * 7}s`,
               }}
             />
           ))}
@@ -60,7 +47,7 @@ export default function Home() {
         <div className="hero-caption">
           <span>Featured memories</span>
           <span className="line" />
-          <span>01 — 04</span>
+          <span>01 — {String(activeHeroImages.length).padStart(2, "0")}</span>
         </div>
         <a className="scroll-cue" href="#intro" aria-label="下へスクロール">Scroll</a>
       </section>
@@ -80,15 +67,19 @@ export default function Home() {
         <div className="section-heading">
           <div>
             <p className="section-index">002 — FEATURED JOURNEY</p>
-            <h2>水戸・大洗</h2>
+            <h2>{featuredJourney.title}</h2>
           </div>
-          <p>海と歴史、茨城の食を巡る旅。</p>
+          <p>{featuredJourney.tagline}</p>
         </div>
-        <Link href="/journeys/mito-oarai" className="featured-image">
+        <Link
+          href={`/journeys/${featuredJourney.slug}`}
+          className={`featured-image${featuredImage.src ? "" : " is-placeholder"}`}
+          style={featuredImage.src ? { backgroundImage: `linear-gradient(90deg, rgba(0,0,0,.35), transparent), url("${featuredImage.src}")` } : undefined}
+        >
           <div className="featured-overlay">
-            <p>2026.07.27 — 07.28</p>
-            <h3>静かな夕暮れが、<br />旅の輪郭をつくる。</h3>
-            <span>View the story →</span>
+            <p>{featuredJourney.date} · {featuredJourney.duration}</p>
+            <h3>{featuredImage.src ? featuredJourney.tagline : "写真を、\nこの旅の記憶へ。"}</h3>
+            <span>{featuredImage.src ? "View the story →" : "Photo to be added →"}</span>
           </div>
         </Link>
       </section>
