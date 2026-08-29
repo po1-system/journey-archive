@@ -36,6 +36,38 @@ a { color: inherit; text-decoration: none; }
 .hero-caption .line { width: 42px; border-top: 1px solid rgba(255,255,255,.5); }
 .scroll-cue { position: absolute; z-index: 5; left: 4.5vw; bottom: 40px; writing-mode: vertical-rl; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; }
 
+/* Home: an editorial, scroll-led journey between destinations. */
+.journey-passage { position: relative; background: #070707; }
+.passage-intro { min-height: 24svh; display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 36px 6vw 30px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }
+.passage-intro > p:last-child { margin: 0; }
+.passage-scene { --scene-progress: 0; position: relative; height: 220svh; }
+.passage-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: #090909; }
+.passage-layer, .passage-vignette, .passage-next { position: absolute; inset: 0; }
+.passage-layer { z-index: 0; background-position: center; background-repeat: no-repeat; background-size: cover; will-change: transform, opacity, filter; }
+.passage-background { transform: scale(calc(1.01 + var(--scene-progress) * .15)) translate3d(0, calc(var(--scene-progress) * -1.8%), 0); filter: saturate(.72) contrast(1.03) brightness(calc(.88 - var(--scene-progress) * .12)); }
+.passage-midground { opacity: .3; background-size: 115%; background-position: center calc(50% + var(--scene-progress) * -7%); transform: scale(calc(1.08 + var(--scene-progress) * .22)) translate3d(0, calc(var(--scene-progress) * -8%), 0); filter: blur(.5px) saturate(.5) contrast(1.25); mix-blend-mode: screen; }
+.passage-foreground { opacity: calc(.12 + var(--scene-progress) * .16); background-size: 136%; background-position: center calc(50% + var(--scene-progress) * -13%); transform: scale(calc(1.12 + var(--scene-progress) * .28)) translate3d(0, calc(var(--scene-progress) * -16%), 0); filter: blur(2px) brightness(.5) contrast(1.35); mix-blend-mode: soft-light; }
+.passage-vignette { z-index: 1; background: linear-gradient(90deg, rgba(0,0,0,.64), rgba(0,0,0,.03) 63%), linear-gradient(0deg, rgba(0,0,0,.6), transparent 52%), radial-gradient(circle at 52% 42%, transparent 26%, rgba(0,0,0,.26) 100%); }
+.passage-copy { position: absolute; z-index: 3; top: 50%; left: clamp(26px, 9vw, 150px); width: min(72vw, 800px); transform: translate3d(0, calc(-50% + var(--scene-progress) * -10%), 0); opacity: min(1, max(0, calc((var(--scene-progress) - .06) * 5.5), calc((.95 - var(--scene-progress)) * 7))); will-change: transform, opacity; }
+.passage-number, .passage-prefecture, .passage-date, .passage-link { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; }
+.passage-number { margin: 0 0 42px; color: rgba(255,255,255,.55); }
+.passage-prefecture { margin: 0; color: var(--gold); }
+.passage-copy h2 { max-width: 720px; margin: 20px 0 18px; font: 400 clamp(60px, 10vw, 158px)/.95 Georgia, "Yu Mincho", serif; letter-spacing: -.065em; }
+.passage-date { margin: 0; color: rgba(255,255,255,.68); }
+.passage-line { max-width: 360px; margin: 38px 0 34px; color: rgba(255,255,255,.82); font: 400 clamp(16px, 2vw, 23px)/1.8 "Yu Mincho", serif; letter-spacing: .06em; }
+.passage-link { display: inline-flex; gap: 18px; align-items: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.45); }
+.passage-link span { color: var(--gold); font-size: 17px; line-height: .5; }
+.passage-coordinate { position: absolute; z-index: 3; right: 5vw; bottom: 36px; left: 5vw; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; color: rgba(255,255,255,.55); font-size: 7px; letter-spacing: .16em; }
+.passage-coordinate i { border-top: 1px solid rgba(255,255,255,.3); }
+.passage-next { z-index: 2; overflow: hidden; opacity: clamp(0, calc((var(--scene-progress) - .67) * 3.1), 1); transform: scale(calc(1.1 - var(--scene-progress) * .1)); filter: blur(calc((1 - var(--scene-progress)) * 4px)); will-change: opacity, transform, filter; }
+.passage-next-image, .passage-next-shade { position: absolute; inset: 0; }
+.passage-next-image { background-position: center; background-size: cover; }
+.passage-next-shade { background: linear-gradient(90deg, rgba(0,0,0,.66), rgba(0,0,0,.06) 64%), linear-gradient(0deg, rgba(0,0,0,.58), transparent 58%); }
+.passage-next-copy { position: absolute; top: 50%; left: clamp(26px, 9vw, 150px); transform: translateY(-50%); }
+.passage-next-copy p { margin: 0 0 16px; color: var(--gold); font-size: 8px; letter-spacing: .2em; }
+.passage-next-copy strong { display: block; font: 400 clamp(38px, 6vw, 88px)/1.1 Georgia, "Yu Mincho", serif; }
+.passage-next-copy span { display: block; margin-top: 20px; color: rgba(255,255,255,.7); font-size: 9px; letter-spacing: .18em; }
+
 .section { width: min(100%, 1480px); margin: 0 auto; padding: clamp(110px, 11vw, 170px) clamp(26px, 6vw, 92px); }
 .manifesto { display: grid; grid-template-columns: 1fr 2.2fr; gap: 50px; align-items: start; }
 .manifesto h2, .section-heading h2, .chapter h2, .food h2, .travel-data h2 { margin: 0; font-family: Georgia, "Yu Mincho", serif; font-weight: 400; font-size: clamp(38px, 5vw, 72px); letter-spacing: -.035em; }
@@ -356,6 +388,16 @@ html[data-journey-tone="sunset"] .cinematic-sunset { filter: saturate(1.08) sepi
   .hero h1, .story-hero h1 { font-size: clamp(34px, 11vw, 58px); }
   .story-hero-content { left: 24px; bottom: 34px; }
   .hero-caption { display: none; }
+  .passage-intro { min-height: 19svh; padding: 28px 24px 24px; }
+  .passage-scene { height: 185svh; }
+  .passage-copy { top: auto; right: 24px; bottom: 13svh; left: 24px; width: auto; transform: translate3d(0, calc(var(--scene-progress) * -7%), 0); }
+  .passage-copy h2 { margin: 14px 0; font-size: clamp(52px, 18vw, 84px); }
+  .passage-number { margin-bottom: 25px; }
+  .passage-line { margin: 25px 0; font-size: 15px; }
+  .passage-midground { background-size: 135%; }
+  .passage-foreground { background-size: 162%; }
+  .passage-coordinate { right: 24px; bottom: 24px; left: 24px; }
+  .passage-next-copy { right: 24px; left: 24px; }
   .section { padding: 90px 24px; }
   .manifesto, .story-lead, .travel-data, .planned-journey-note { grid-template-columns: 1fr; }
   .section-heading { align-items: start; flex-direction: column; }
@@ -432,4 +474,9 @@ html[data-journey-tone="sunset"] .cinematic-sunset { filter: saturate(1.08) sepi
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
   .hero-slide:first-child { opacity: 1; }
+  .passage-scene { height: auto; min-height: 72svh; }
+  .passage-sticky { position: relative; min-height: 72svh; height: auto; }
+  .passage-layer { transform: none !important; }
+  .passage-midground, .passage-foreground, .passage-next { display: none; }
+  .passage-copy { position: relative; top: auto; left: auto; width: auto; padding: 18svh 9vw; transform: none; opacity: 1; }
 }

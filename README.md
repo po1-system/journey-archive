@@ -1,5 +1,15 @@
 # Journey Archive
 
+## トップの「景色を巡る」スクロール演出
+
+トップページの水戸・大洗 → 長野の演出は、`app/data/home-passage.ts` で管理しています。
+
+- `layers.background` は必須です。1枚だけでも、画面側が背景・中景・前景として重ねて動かします。
+- `layers.midground` と `layers.foreground` を設定すると、別写真（または透過PNG）で奥行きを強められます。
+- `next` は、現在の景色を抜ける直前に見えてくる次の旅先です。
+
+本人撮影の写真を使う場合は、たとえば `public/images/journeys/nagano-passage.jpg` を追加し、`background: "/images/journeys/nagano-passage.jpg"` に変更してください。旅行カード用の代表写真は従来どおり `app/data/site-images.ts` で別に管理されるため、この演出用の写真を変更してもカードの写真は変わりません。
+
 「まだ見ぬ景色求めて — Journey Archive」のGitHub Pages版です。
 
 ## トップページのヒーロー画像を変更する方法
