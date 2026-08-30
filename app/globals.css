@@ -36,6 +36,35 @@ a { color: inherit; text-decoration: none; }
 .hero-caption .line { width: 42px; border-top: 1px solid rgba(255,255,255,.5); }
 .scroll-cue { position: absolute; z-index: 5; left: 4.5vw; bottom: 40px; writing-mode: vertical-rl; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; }
 
+/* Immersive route: scroll drives a virtual camera, not a content stack. */
+.journey-route { position: relative; z-index: 1; height: 720svh; background: #070807; }
+.journey-route-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: #070807; }
+.journey-route-canvas, .journey-route-canvas canvas, .journey-route-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.journey-route-canvas canvas { display: block; }
+.journey-route-shade { z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.5), transparent 48%, rgba(0,0,0,.15)), linear-gradient(0deg, rgba(0,0,0,.6), transparent 45%); }
+.route-hud { position: absolute; z-index: 3; top: 32px; right: 5.5vw; left: 5.5vw; display: flex; justify-content: space-between; gap: 20px; color: rgba(238,234,226,.6); font-size: 8px; letter-spacing: .18em; }
+.route-hud p { margin: 0; }
+.route-hud > div { display: flex; align-items: center; gap: 12px; }
+.route-hud i { width: clamp(42px, 7vw, 100px); border-top: 1px solid rgba(238,234,226,.32); }
+.route-hud b { color: var(--gold); font: 400 9px Georgia, serif; }
+.spatial-label { position: absolute; z-index: 2; top: 0; left: 0; width: max-content; display: grid; gap: 8px; pointer-events: none; transform-origin: center; transition: opacity .2s linear; }
+.spatial-label span { color: var(--gold); font: 400 9px Georgia, serif; letter-spacing: .18em; }
+.spatial-label strong { color: rgba(255,255,255,.92); font: 400 clamp(24px, 4vw, 62px)/.92 Georgia, "Yu Mincho", serif; letter-spacing: -.045em; text-shadow: 0 8px 30px rgba(0,0,0,.65); }
+.route-direction { position: absolute; z-index: 3; top: 50%; left: clamp(26px, 9vw, 150px); max-width: min(78vw, 700px); transform: translateY(-50%); text-shadow: 0 8px 35px rgba(0,0,0,.55); }
+.route-direction p { margin: 0 0 16px; color: var(--gold); font-size: 9px; letter-spacing: .22em; }
+.route-direction h2 { margin: 0; font: 400 clamp(46px, 8vw, 118px)/1 Georgia, "Yu Mincho", serif; letter-spacing: -.06em; }
+.route-direction span { display: block; margin-top: 22px; color: rgba(255,255,255,.68); font-size: 9px; letter-spacing: .17em; }
+.route-arrival { position: absolute; z-index: 4; right: clamp(26px, 7vw, 120px); bottom: 8vh; display: grid; justify-items: end; gap: 15px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .7s ease, transform .7s ease; }
+.route-arrival.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+.route-arrival p { margin: 0; color: rgba(255,255,255,.65); font-size: 8px; letter-spacing: .18em; }
+.route-arrival a { display: flex; gap: 18px; padding-bottom: 9px; border-bottom: 1px solid rgba(255,255,255,.65); color: var(--ink); font-size: 10px; letter-spacing: .17em; }
+.route-arrival a span { color: var(--gold); font-size: 18px; line-height: .55; }
+.route-fallback { display: none; }
+.journey-route[data-webgl="fallback"] { height: auto; }
+.journey-route[data-webgl="fallback"] .journey-route-sticky { position: relative; height: auto; padding: 82px 6vw 54px; }
+.journey-route[data-webgl="fallback"] .journey-route-canvas, .journey-route[data-webgl="fallback"] .journey-route-shade, .journey-route[data-webgl="fallback"] .spatial-label, .journey-route[data-webgl="fallback"] .route-hud, .journey-route[data-webgl="fallback"] .route-direction, .journey-route[data-webgl="fallback"] .route-arrival { display: none; }
+.journey-route[data-webgl="fallback"] .route-fallback { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
 /* Home: an editorial, scroll-led journey between destinations. */
 .journey-passage { position: relative; background: #070707; }
 .passage-intro { min-height: 24svh; display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 36px 6vw 30px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }
@@ -388,6 +417,13 @@ html[data-journey-tone="sunset"] .cinematic-sunset { filter: saturate(1.08) sepi
   .hero h1, .story-hero h1 { font-size: clamp(34px, 11vw, 58px); }
   .story-hero-content { left: 24px; bottom: 34px; }
   .hero-caption { display: none; }
+  .journey-route { height: 620svh; }
+  .route-hud { top: 23px; right: 24px; left: 24px; font-size: 7px; }
+  .route-hud > div span { max-width: 124px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .route-direction { right: 24px; left: 24px; }
+  .route-direction h2 { font-size: clamp(45px, 15vw, 75px); }
+  .route-arrival { right: 24px; bottom: 32px; }
+  .spatial-label strong { font-size: clamp(20px, 8vw, 38px); }
   .passage-intro { min-height: 19svh; padding: 28px 24px 24px; }
   .passage-scene { height: 185svh; }
   .passage-copy { top: auto; right: 24px; bottom: 13svh; left: 24px; width: auto; transform: translate3d(0, calc(var(--scene-progress) * -7%), 0); }
@@ -474,6 +510,13 @@ html[data-journey-tone="sunset"] .cinematic-sunset { filter: saturate(1.08) sepi
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
   .hero-slide:first-child { opacity: 1; }
+  .journey-route { height: auto; }
+  .journey-route-sticky { position: relative; height: auto; min-height: 0; padding: 82px 24px 54px; }
+  .journey-route-canvas, .journey-route-shade, .spatial-label, .route-hud, .route-direction, .route-arrival { display: none; }
+  .route-fallback { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .route-fallback-card { min-height: 300px; display: flex; flex-direction: column; justify-content: end; gap: 9px; padding: 18px; background-position: center; background-size: cover; }
+  .route-fallback-card small, .route-fallback-card span { color: rgba(255,255,255,.7); font-size: 8px; letter-spacing: .12em; }
+  .route-fallback-card strong { font: 400 30px/1 Georgia, "Yu Mincho", serif; }
   .passage-scene { height: auto; min-height: 72svh; }
   .passage-sticky { position: relative; min-height: 72svh; height: auto; }
   .passage-layer { transform: none !important; }

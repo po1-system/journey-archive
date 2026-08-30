@@ -3,7 +3,7 @@ import { getJourney, journeys } from "./data/journeys";
 import { featuredJourneySlug, getJourneyImage, homeHeroImages } from "./data/site-images";
 import ArchiveDashboard from "./components/archive-dashboard";
 import JourneyPassage from "./components/journey-passage";
-import { homePassageScenes } from "./data/home-passage";
+import { journeyRoutePrototype } from "./data/home-passage";
 
 export default function Home() {
   const featuredJourney = getJourney(featuredJourneySlug);
@@ -54,7 +54,7 @@ export default function Home() {
         <a className="scroll-cue" href="#passage" aria-label="景色の中を進む">Enter</a>
       </section>
 
-      <JourneyPassage scenes={homePassageScenes} />
+      <JourneyPassage scenes={journeyRoutePrototype} />
 
       <section className="manifesto section" id="intro">
         <p className="section-index">001 — THE ARCHIVE</p>

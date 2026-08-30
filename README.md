@@ -1,14 +1,14 @@
 # Journey Archive
 
-## トップの「景色を巡る」スクロール演出
+## トップの「Journey Route」演出
 
-トップページの水戸・大洗 → 長野の演出は、`app/data/home-passage.ts` で管理しています。
+トップページの水戸・大洗 → 長野の没入型ルートは、`app/data/home-passage.ts` で管理しています。スクロール操作がThree.jsの仮想カメラの前進・後退に連動し、旅行写真を空間内の「写真ポータル」として通過します。
 
-- `layers.background` は必須です。1枚だけでも、画面側が背景・中景・前景として重ねて動かします。
-- `layers.midground` と `layers.foreground` を設定すると、別写真（または透過PNG）で奥行きを強められます。
-- `next` は、現在の景色を抜ける直前に見えてくる次の旅先です。
+- `image` にその旅の演出用写真を設定します。
+- 配列に旅行を追加すると、次の写真ポータルとして拡張できます。
+- 長野の仮の山景色は空間演出専用です。旅行カードの代表写真設定とは独立しています。
 
-本人撮影の写真を使う場合は、たとえば `public/images/journeys/nagano-passage.jpg` を追加し、`background: "/images/journeys/nagano-passage.jpg"` に変更してください。旅行カード用の代表写真は従来どおり `app/data/site-images.ts` で別に管理されるため、この演出用の写真を変更してもカードの写真は変わりません。
+本人撮影の写真を使う場合は、たとえば `public/images/journeys/nagano-route.jpg` を追加し、`image: "/images/journeys/nagano-route.jpg"` に変更してください。旅行カード用の代表写真は従来どおり `app/data/site-images.ts` で別に管理されるため、この演出用の写真を変更してもカードの写真は変わりません。
 
 「まだ見ぬ景色求めて — Journey Archive」のGitHub Pages版です。
 
