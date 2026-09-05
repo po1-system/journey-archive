@@ -3,7 +3,7 @@ import { getJourney, journeys } from "./data/journeys";
 import { featuredJourneySlug, getJourneyImage, homeHeroImages } from "./data/site-images";
 import ArchiveDashboard from "./components/archive-dashboard";
 import JourneyPassage from "./components/journey-passage";
-import { journeyRoutePrototype } from "./data/home-passage";
+import { journeyRoute } from "./data/home-passage";
 
 export default function Home() {
   const featuredJourney = getJourney(featuredJourneySlug);
@@ -21,6 +21,8 @@ export default function Home() {
           <Link href={`/journeys/${featuredJourney.slug}`}>Featured</Link>
         </nav>
       </header>
+
+      <JourneyPassage scenes={journeyRoute} />
 
       <section className="hero" aria-label="旅の写真スライドショー">
         <div className="hero-slides" aria-hidden="true">
@@ -51,10 +53,8 @@ export default function Home() {
           <span className="line" />
           <span>01 — {String(activeHeroImages.length).padStart(2, "0")}</span>
         </div>
-        <a className="scroll-cue" href="#passage" aria-label="景色の中を進む">Enter</a>
+        <a className="scroll-cue" href="#intro" aria-label="旅行一覧へ">Archive</a>
       </section>
-
-      <JourneyPassage scenes={journeyRoutePrototype} />
 
       <section className="manifesto section" id="intro">
         <p className="section-index">001 — THE ARCHIVE</p>

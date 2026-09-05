@@ -1,47 +1,34 @@
+import { journeys } from "./journeys";
+import { mitoJourney } from "../archive-config";
 import { getJourneyImage } from "./site-images";
 
 export type JourneyRouteStop = {
-  slug: string;
-  number: string;
-  prefecture: string;
-  title: string;
-  date: string;
-  duration: string;
-  href: string;
-  image: string;
-  imageIsPlaceholder?: boolean;
+  slug: string; number: string; title: string; english: string;
+  prefecture: string; date: string; href: string; image: string | null;
+  imageIsPlaceholder: boolean; longitude: number; latitude: number; anchor: string;
 };
 
-const mitoImage = getJourneyImage("mito-oarai").src
-  ?? "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2600&q=88";
+// WGS84 representative city locations, not recorded flight paths or hotel pins.
+const anchors = [
+  ["kagawa", "KAGAWA", 134.0466, 34.3428, "高松"],
+  ["fukuoka", "FUKUOKA", 130.4017, 33.5902, "福岡"],
+  ["hiroshima", "HIROSHIMA", 132.4553, 34.3853, "広島"],
+  ["okinawa", "OKINAWA", 127.6792, 26.2124, "那覇"],
+  ["wakayama", "WAKAYAMA", 135.344, 33.6781, "白浜"],
+  ["ishikawa", "ISHIKAWA", 136.6562, 36.5613, "金沢"],
+  ["hakodate", "HAKODATE", 140.7288, 41.7687, "函館"],
+  ["mito-oarai", "MITO / OARAI", 140.4712, 36.3659, "水戸"],
+  ["nagano", "NAGANO", 138.181, 36.6513, "長野"],
+] as const;
 
-/**
- * The first immersive route prototype.
- *
- * Add the next journey here when the Mito → Nagano experience is approved.
- * Each item becomes a 3D photo portal along one virtual route.
- */
-export const journeyRoutePrototype: JourneyRouteStop[] = [
-  {
-    slug: "mito-oarai",
-    number: "08",
-    prefecture: "茨城県",
-    title: "水戸・大洗",
-    date: "2026.07.27 — 07.28",
-    duration: "1泊2日",
-    href: "/journeys/mito-oarai",
-    image: mitoImage,
-  },
-  {
-    slug: "nagano",
-    number: "09",
-    prefecture: "長野県",
-    title: "長野",
-    date: "2026.08.17 — 08.18",
-    duration: "1泊2日",
-    href: "/journeys/nagano",
-    // この写真はトップの空間演出専用。旅行カードの代表写真は未設定のままです。
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2600&q=88",
-    imageIsPlaceholder: true,
-  },
+export const journeyRoute: JourneyRouteStop[] = [
+  { slug: "tokyo", number: "000", title: "東京", english: "TOKYO", prefecture: "東京都", date: "旅の出発点", href: "#journeys", image: null, imageIsPlaceholder: false, longitude: 139.7671, latitude: 35.6812, anchor: "東京" },
+  ...anchors.map(([slug, english, longitude, latitude, anchor]) => {
+    const journey = slug === "mito-oarai" ? mitoJourney : journeys.find((j) => j.slug === slug)!;
+    const configured = getJourneyImage(slug).src;
+    // Legacy stock photos may depict a different region. Use only configured
+    // personal images here; published hero/best photos override these at runtime.
+    const image = configured?.includes("images.unsplash.com") ? null : configured;
+    return { slug, english, longitude, latitude, anchor, number: journey.number.padStart(3, "0"), title: journey.title, prefecture: journey.prefecture, date: journey.date, href: `/journeys/${slug}/`, image, imageIsPlaceholder: false };
+  }),
 ];

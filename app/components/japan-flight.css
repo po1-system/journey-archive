@@ -1,0 +1,41 @@
+.aerial-journey { --flight-progress:0; --flight-intro:1; position:relative; background:#0b1720; }
+.aerial-stage { position:sticky; top:0; height:100svh; overflow:hidden; isolation:isolate; color:#f4efe3; }
+.aerial-canvas,.aerial-canvas canvas,.aerial-vignette { position:absolute; inset:0; width:100%; height:100%; }
+.aerial-canvas canvas { display:block; }
+.aerial-vignette { pointer-events:none; background:linear-gradient(0deg,rgba(5,12,16,.90),transparent 28%),linear-gradient(90deg,rgba(5,12,16,.28),transparent 50%); }
+.aerial-intro { position:absolute; top:23%; left:6vw; pointer-events:none; opacity:var(--flight-intro); transform:translateY(calc((1 - var(--flight-intro)) * -25px)); }
+.aerial-intro p { color:#c9b997; letter-spacing:.25em; font-size:9px; }
+.aerial-intro h1 { font:400 clamp(44px,6.5vw,98px)/1.3 Georgia,"Yu Mincho",serif; margin:26px 0; letter-spacing:-.055em; }
+.aerial-intro>span { font:12px/2.3 "Yu Mincho",serif; color:#c0cac7; letter-spacing:.12em; }
+.aerial-skip { position:absolute; top:94px; right:5.5vw; font-size:10px; letter-spacing:.08em; padding:12px 0; border-bottom:1px solid #8d9c9c55; }
+.aerial-skip span { margin-left:18px; color:#d7bd8f; }
+.aerial-caption { position:absolute; left:6vw; bottom:180px; max-width:85vw; opacity:calc(1 - var(--flight-intro)); text-shadow:0 2px 24px #0009; }
+.aerial-caption p { color:#dcc69d; font-size:9px; letter-spacing:.15em; line-height:1.8; }
+.aerial-caption h2 { font:400 clamp(34px,4.7vw,68px)/1.2 Georgia,"Yu Mincho",serif; margin:12px 0 18px; letter-spacing:-.045em; }
+.aerial-caption>span { font-size:11px; letter-spacing:.09em; color:#d0d4cc; }
+.aerial-caption small { display:block; font-size:9px; color:#bdc5c1; margin-top:12px; }
+.aerial-story { display:flex; justify-content:space-between; gap:44px; width:max-content; font-size:12px; border-bottom:1px solid #dac6a3; padding:20px 0 9px; }
+.aerial-bottom { position:absolute; bottom:20px; left:6vw; right:6vw; }
+.aerial-progress { display:flex; align-items:center; gap:24px; font-size:8px; letter-spacing:.17em; }
+.aerial-progress i { height:1px; background:#f2d8a6; flex:1; transform:scaleX(var(--flight-progress)); transform-origin:left; }
+.aerial-progress output { font:12px Georgia,serif; color:#e0c99e; }
+.aerial-stops { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:8px; margin-top:17px; }
+.aerial-stops button { min-height:46px; display:flex; align-items:center; gap:9px; background:transparent; border:0; border-top:1px solid #a4b2ad30; color:#adb9b5; padding:8px 0; cursor:pointer; text-align:left; }
+.aerial-stops button[aria-current] { border-color:#e7c897; color:#fff3d5; }
+.aerial-stops b { font:9px Georgia,serif; color:#c9b48f; }.aerial-stops span { font-size:10px; white-space:nowrap; }
+.aerial-credit { display:flex; justify-content:space-between; gap:12px; margin:8px 0 0; font-size:8px; color:#889998; letter-spacing:.02em; }
+.aerial-loading { position:absolute; top:110px; left:6vw; color:#ccbc9c; font-size:10px; }
+.aerial-fallback { display:none; padding:125px 6vw 70px; }
+.aerial-fallback h2 { font:400 clamp(32px,5vw,68px) Georgia,"Yu Mincho",serif; }
+.aerial-fallback>p { color:#bcc9c6; font-size:12px; }
+.aerial-fallback>div { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:30px; margin-top:40px; }
+.aerial-fallback a { display:grid; gap:18px; padding:24px 0; border-top:1px solid #b8c4bc44; }.aerial-fallback small,.aerial-fallback span { font-size:10px; }.aerial-fallback strong { font:400 25px Georgia,"Yu Mincho",serif; }
+.aerial-journey[data-mode="fallback"] { height:auto !important; }.aerial-journey[data-mode="fallback"] .aerial-stage { height:auto; position:relative; }.aerial-journey[data-mode="fallback"] .aerial-stage>:not(.aerial-fallback) { display:none; }.aerial-journey[data-mode="fallback"] .aerial-fallback { display:block; }
+.aerial-stage a:focus-visible,.aerial-stage button:focus-visible { outline:2px solid #e2ca9d; outline-offset:5px; }
+@media(max-width:700px) {
+ .aerial-intro { top:24%; left:24px; }.aerial-intro h1 { font-size:clamp(36px,9.8vw,62px); }.aerial-skip { top:69px; right:24px; font-size:9px; }
+ .aerial-caption { left:24px; bottom:188px; }.aerial-caption h2 { font-size:36px; }.aerial-caption p { font-size:8px; }.aerial-caption>span { font-size:9px; }
+ .aerial-bottom { left:24px; right:24px; bottom:14px; }.aerial-stops { grid-template-columns:repeat(5,minmax(0,1fr)); gap:0 10px; margin-top:10px; }.aerial-stops button { min-height:40px; gap:5px; }.aerial-stops span { font-size:9px; }.aerial-stops b { font-size:8px; }
+ .aerial-credit { flex-direction:column; gap:4px; font-size:7px; }.aerial-fallback>div { grid-template-columns:1fr; }.aerial-loading { top:75px; font-size:9px; }
+}
+@media(prefers-reduced-motion:reduce) { .aerial-journey { height:auto !important; }.aerial-stage { position:relative; height:auto; }.aerial-stage>:not(.aerial-fallback) { display:none; }.aerial-fallback { display:block; } }

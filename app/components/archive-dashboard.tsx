@@ -161,7 +161,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
                       if (isVisited && (event.key === "Enter" || event.key === " ")) setPrefecture(name);
                     }}
                   >
-                    <title>{name} · {isVisited ? "訪問済み" : "未訪問"}</title>
+                    <title>{`${name} · ${isVisited ? "訪問済み" : "未訪問"}`}</title>
                     <path d={location.path} />
                   </g>
                 );
