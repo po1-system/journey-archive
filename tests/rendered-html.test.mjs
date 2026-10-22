@@ -2,90 +2,44 @@ import assert from "node:assert/strict";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
-const developmentPreviewMeta =
-  /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
-const templateRoot = new URL("../", import.meta.url);
-const previewRoot = new URL("../app/_sites-preview/", import.meta.url);
+const root = new URL("../out/", import.meta.url);
+const prefix = "/journey-archive/";
+const home = await readFile(new URL("index.html", root), "utf8");
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
-}
-
-test("server-renders the starter loading skeleton", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
-  assert.match(html, developmentPreviewMeta);
-  assert.match(html, /<title>Your site is taking shape<\/title>/i);
-  assert.match(html, /Building your site/);
-  assert.match(html, /Your site is taking shape/);
-  assert.match(
-    html,
-    /Your first version will appear here automatically when it’s ready\./,
-  );
-  assert.doesNotMatch(html, /Codex/);
-  assert.match(html, /react-loading-skeleton/);
-  assert.match(html, /role="status"/);
+test("Pages export retains the immersive controls and existing archive", () => {
+  for (const text of ["FLIGHT MODE", "ATLAS MODE", "東京", "水戸・大洗", "長野", "FEATURED JOURNEY", 'id="explore"', 'id="map"', 'id="rankings"']) {
+    assert.ok(home.includes(text), "Missing home content: " + text);
+  }
+  assert.ok(!home.includes("Your site is taking shape"));
 });
 
-test("keeps the loading skeleton scoped and disposable", async () => {
-  const [preview, css, page, layout, packageJson, files] = await Promise.all([
-    readFile(new URL("SkeletonPreview.tsx", previewRoot), "utf8"),
-    readFile(new URL("preview.css", previewRoot), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../package.json", import.meta.url), "utf8"),
-    readdir(previewRoot),
-  ]);
+test("Pages scripts and styles resolve under the repository subpath", async () => {
+  const assets = [...home.matchAll(/(?:src|href)="(\/journey-archive\/_next\/[^"?]+)/g)].map(m => m[1]);
+  assert.ok(assets.length > 0);
+  assert.ok(!/(?:src|href)="\/_next\//.test(home));
+  for (const asset of new Set(assets)) await access(new URL(asset.slice(prefix.length), root));
+});
 
-  assert.deepEqual(files.sort(), ["SkeletonPreview.tsx", "preview.css"]);
-  assert.match(preview, /from "react-loading-skeleton"/);
-  assert.match(preview, /baseColor="#eceae7"/);
-  assert.match(preview, /highlightColor="#f9f8f6"/);
-  assert.match(preview, /duration=\{2\.8\}/);
-  assert.match(preview, /sites-skeleton-search-placeholder/);
-  assert.match(packageJson, /"react-loading-skeleton": "3\.5\.0"/);
+test("standalone worker and license are included, unchanged from the pinned package", async () => {
+  const actual = await readFile(new URL("vendor/maplibre-gl-worker.js", root));
+  const official = await readFile(new URL("../node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs", import.meta.url));
+  assert.ok(actual.equals(official), "Export must contain the official standalone worker, not the main MapLibre module");
+  const license = await readFile(new URL("vendor/maplibre-LICENSE.txt", root), "utf8");
+  assert.ok(license.includes("Redistribution"));
+});
 
-  const shellIndex = preview.indexOf('className="sites-skeleton-shell"');
-  const statusIndex = preview.indexOf('className="sites-skeleton-status"');
-  assert.ok(shellIndex >= 0 && statusIndex > shellIndex);
-  assert.match(css, /position:\s*fixed/);
-  assert.match(css, /inset:\s*0/);
-  assert.match(css, /opacity:\s*0\.52/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /#020617|canvas|pets|progress/i);
-  assert.doesNotMatch(
-    preview,
-    /loading-spinner|status-mark|status-progress|canvas|cookie|random/i,
-  );
+test("built client explicitly references the standalone worker (Turbopack URL regression)", async () => {
+  const chunks = new URL("_next/static/chunks/", root);
+  const js = await Promise.all((await readdir(chunks)).filter(f => f.endsWith(".js")).map(f => readFile(new URL(f, chunks), "utf8")));
+  const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+  assert.ok(js.some(chunk => chunk.includes("/vendor/maplibre-gl-worker.js?v=" + pkg.dependencies["maplibre-gl"])), "Client must bypass MapLibre's import.meta worker discovery");
+});
 
-  assert.match(page, /export const metadata:\s*Metadata/);
-  assert.match(page, /"codex-preview": "development"/);
-  assert.match(page, /<SkeletonPreview \/>/);
-  assert.match(layout, /title:\s*"Starter Project"/);
-  assert.doesNotMatch(layout, /codex-preview|_sites-preview|themeColor|\bViewport\b/);
-  assert.doesNotMatch(css, /(^|\s)(html|body)\s*\{/m);
-
-  await assert.rejects(
-    access(new URL("public/_sites-preview", templateRoot)),
-  );
+test("existing journey detail pages remain in the static export", async () => {
+  const slugs = ["kagawa", "fukuoka", "hiroshima", "okinawa", "wakayama", "ishikawa", "hakodate", "mito-oarai", "nagano", "sapporo-otaru"];
+  for (const slug of slugs) {
+    const html = await readFile(new URL("journeys/" + slug + "/index.html", root), "utf8");
+    assert.ok(html.includes("Journey Archive"), "Invalid detail page: " + slug);
+    assert.ok(home.includes(prefix + "journeys/" + slug + "/"), "Missing journey link: " + slug);
+  }
 });

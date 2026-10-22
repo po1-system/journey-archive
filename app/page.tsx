@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getJourney, journeys } from "./data/journeys";
 import { featuredJourneySlug, getJourneyImage, homeHeroImages } from "./data/site-images";
 import ArchiveDashboard from "./components/archive-dashboard";
-import JourneyPassage from "./components/journey-passage";
+import ImmersiveJourney from "./components/immersive/immersive-journey";
 import { journeyRoute } from "./data/home-passage";
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <JourneyPassage scenes={journeyRoute} />
+      <ImmersiveJourney scenes={journeyRoute} />
 
       <section className="hero" aria-label="旅の写真スライドショー">
         <div className="hero-slides" aria-hidden="true">

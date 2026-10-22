@@ -1,14 +1,19 @@
 # Journey Archive
 
-## トップの「日本を飛ぶ旅」
+## Immersive Flight / Atlas
 
-東京 → 香川 → 福岡 → 広島 → 沖縄 → 和歌山 → 石川 → 函館 → 水戸・大洗 → 長野を、訪問順に飛行します。ホイール・トラックパッド・スマートフォンのスワイプで進み、逆スクロールで戻れます。画面下の地名から目的地を選択でき、「旅行一覧へスキップ」で通常のサイトへ移動できます。
+トップ上部は、実際の空撮・衛星画像を標高データに重ねた3D地形です。最初の試作区間は **東京 → 水戸・大洗 → 長野**。従来の写真スライド、FEATURED JOURNEY、旅行一覧・詳細ページはその下に残しています。
 
-日本の海岸線はNatural Earthの公開地理データです。沖縄も実際の位置にあり、地名・ルート・カメラは同じ緯度経度の投影を使います。地図は海岸線を簡略化したものです。立体的な厚みは演出であり、標高データではありません。線は旅行同士を訪問順に結ぶもので、実際の飛行経路や鉄道経路ではありません。「直線距離」は各旅行の代表都市間の大円距離です。
+- **FLIGHT MODE**: ホイール・トラックパッド・スマートフォンの縦スワイプでカメラが前進。逆スクロールで同じ道を戻ります。画面下の地名で到着地点に移動できます。
+- **ATLAS MODE**: ドラッグで移動、ホイール／ピンチで拡大。右ドラッグ／2本指操作で回転・傾斜。「日本全体」で俯瞰し、地名を選ぶとその場所へ飛行します。
+- FLIGHTに戻ると、ATLASに入る前の飛行位置に滑らかに戻ります。「旅行一覧へ」でいつでも従来UIへ進めます。
+- **Memory Portal**: 目的地の上空に旅行写真を立体配置。空撮から写真へ接近します。「旅の記録を開く」から既存詳細ページに移動できます。
+
+地形は標高データを1.25倍に強調しています。Google Earthのような建物の3D写真測量モデルではありません。ルートは代表都市を結ぶ映像演出で、実際に利用した航空・鉄道路線ではありません。雲・光・霧・夏の色調も演出で、実際の天候・撮影日の空を再現するものではありません。
 
 ### 飛行中に表示する写真の変更
 
-1. 既存の写真管理画面で、旅行の「Hero」または「Best」に写真を公開します。Heroを優先し、なければBestの最上位を使います。セルフィー・料理写真は自動流用しません。
+1. 既存の写真管理画面で、旅行の「Hero」または「Best」に写真を公開します。Hero → Best → Place → Day → Gallery → Selfieの順で1枚を選びます。料理写真・動画は対象外です。セルフィーは風景写真がない場合の最後の候補です（Best Shotランキングの分類は変更しません）。
 2. ファイルで管理する場合は `public/images/journeys/nagano.jpg` などを置き、`app/data/site-images.ts` の `journeyImages.nagano.src` を `/images/journeys/nagano.jpg` にします。次回ビルド・公開で反映されます。
 
 公開済み写真が最優先です。写真未設定時・読み込み失敗時には地名付きの写真追加枠を表示します。地域と一致しない既存のUnsplash仮素材は、この地図体験には使いません。
@@ -16,13 +21,41 @@
 ### 構造と軽量化
 
 - `app/data/home-passage.ts`: 訪問順・代表都市のWGS84座標。日付・旅行名は既存旅行データから取得。
-- `app/components/japan-flight-scene.ts`: Three.js地図・カメラ・写真プレーン。出発→広域飛行→接近→写真内の滞在→通過をつなぐ。
-- `public/maps/japan-context.geojson`: 同梱海岸線データ（約39KB）。APIキー不要。出典は同フォルダのREADME参照。
-- 写真は現在・前後の最大3旅行のみ保持。遠くの写真は破棄。モバイルはDPR上限1.25・テクスチャ最大1024px、PCは1.75・1600px。
+- `app/components/immersive/flight-model.ts`: 前後どちらにも再生できるカメラの経路・高度感・到着タイミング。
+- `app/components/immersive/map-engine.ts`: MapLibre地形、FLIGHT/ATLAS切替、描画・入力制御。
+- `app/components/immersive/memory-portal.ts`: 地図と同じカメラ・奥行きを使うThree.js写真プレーン。
+- `app/components/immersive/map-style.ts`: 空撮・地形ソース、出典、霧・空の色。
+- 写真テクスチャは現在表示する1枚だけ保持し、切替時に破棄。モバイルはDPR上限1.25・テクスチャ最大1024px、PCは1.75・1600px。地図タイルキャッシュは60／120枚を上限とします。
 - 画面外・非表示タブ・カメラ停止中には連続描画を停止。OSの「動きを減らす」、WebGL非対応、地図読み込み失敗では通常の旅一覧へ切り替え。
 - GitHub Pagesのサブパスは `NEXT_PUBLIC_BASE_PATH` をビルド時に設定。地図・ローカル写真の両方に適用。
 
-地理計算の確認: `node --experimental-strip-types --test tests/japan-flight.test.mjs`。
+飛行計算の確認: `node --experimental-strip-types --test tests/immersive-flight.test.mjs tests/japan-flight.test.mjs`。
+
+### 地図の利用条件・APIキー・コスト（2026-10-20確認）
+
+| 用途 | 採用サービス／ライブラリ | 条件 |
+| --- | --- | --- |
+| 3D地図エンジン | [MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js/blob/main/LICENSE.txt) | BSD-3-Clause、APIキー不要 |
+| 空撮・衛星画像 | [国土地理院・全国最新写真](https://maps.gsi.go.jp/development/ichiran.html) | 直接タイルを読み込む方式。出典リンクを地図に表示。[利用規約](https://maps.gsi.go.jp/help/termsofuse.html)に従う |
+| 標高 | [Terrain Tiles / AWS Open Data](https://registry.opendata.aws/terrain-tiles/) | アカウント不要の公開配信。Mapzen、USGS SRTM/GMTED2010、NOAA ETOPO1を表示。[帰属条件](https://github.com/tilezen/joerd/blob/master/docs/attribution.md) |
+
+新しいAPIキー、クレジットカード、有料契約は設定していません。地図SDK自体に従量課金はなく、公開タイルを利用します。ただし外部配信の継続・速度・無制限利用を保証する構成ではありません。既存GitHub Pagesと写真配信の費用・上限は従来どおりです。大量アクセス時は配信元の条件を再確認してから有料サービス等への移行を検討してください。
+
+画像はズームによって撮影年・解像度が異なり、最新の現地状況やリアルタイム映像ではありません。国土地理院画像の出典にはLandsat8 (GSI, TSIC, GEO Grid/AIST, USGS)、GEBCO、NASA/USGS LP DAAC等を含みます。地図右下と「地図・演出について」に出典を表示します。
+
+閲覧時、ブラウザは地理院・AWSへ表示範囲のタイルを直接要求します。利用者の現在地は取得せず、非公開EXIF・予約情報も送信しません。写真は既存の公開済みデータだけを参照します。
+
+### 検証時の注意
+
+GitHub Pagesと同じ出力は `npm run build:pages` で生成します。公開写真の配信は本番ドメイン向けのため、localhostでは写真が準備中になる場合があります。CORS制限を緩めず、公開後にも確認してください。iPhoneサイズのブラウザ検証は実機SafariのGPU・メモリ・タッチ操作を保証しないため、実機確認の有無を別途記録します。
+
+#### 地図処理ファイルとローカル確認
+
+MapLibreのworkerは、Turbopackによる参照先の書き換えを避けるため、公式パッケージから `public/vendor/maplibre-gl-worker.js` へコピーし、地図作成前に明示的に指定しています。`npm run build:pages` の前処理がworkerとライセンスを自動コピーします。直接 `next build` だけを実行せず、このビルド手順を使用してください。生成ファイルはGit管理対象外です。
+
+- `npm test`: 飛行計算8件 → Pages向けビルド → 静的出力5件を確認（公開はしません）。
+- `npm run preview:pages`: ビルド済み出力を `http://127.0.0.1:3120/journey-archive/` で確認。
+- [2026-10-23の検証記録](docs/flight-validation-2026-10-23.md): 確認済み操作と未確認項目。
 
 「まだ見ぬ景色求めて — Journey Archive」のGitHub Pages版です。
 

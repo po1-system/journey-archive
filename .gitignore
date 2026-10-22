@@ -40,3 +40,6 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+# Generated from the pinned MapLibre package during prebuild:pages.
+/public/vendor/maplibre-gl-worker.js
+/public/vendor/maplibre-LICENSE.txt
