@@ -99,7 +99,7 @@ export function createImmersiveMap(options: Options) {
   });
   let errors = 0;
   map.on("sourcedata", event => {
-    if (event.sourceId === "aerial" && event.sourceDataType === "content") firstAerialTile = true;
+    if ((event.sourceId === "aerial" || event.sourceId === "overview") && event.sourceDataType === "content") firstAerialTile = true;
     if (event.sourceId === "elevation" && event.sourceDataType === "content") firstTerrainTile = true;
     if (firstAerialTile && firstTerrainTile) options.onWarning("");
   });

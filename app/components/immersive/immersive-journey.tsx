@@ -118,7 +118,15 @@ export default function ImmersiveJourney({ scenes }: { scenes: JourneyRouteStop[
           {(mode === "flight" ? route : scenes).map(stop => <button key={stop.slug} onClick={() => goTo(stop.slug)} aria-label={`${stop.title}へ移動`} aria-current={current.slug === stop.slug ? "step" : undefined}><small>{stop.number}</small>{stop.slug === "tokyo" ? "東京" : stop.title}</button>)}
         </nav>
         <div className="immersive-footnote"><span>{mode === "flight" ? "PROTOTYPE / TOKYO → MITO・OARAI → NAGANO" : "ATLAS / YOUR JOURNEYS ACROSS JAPAN"}<br />訪問地を結ぶ演出ルート · 実際の交通経路ではありません</span>
-          <details><summary>地図・演出について</summary><div><p>国土地理院の空撮・衛星画像とMapzenの標高データを使用。地形は1.25倍の起伏で描画しています。建物の3Dモデルではありません。</p><p>雲・霧・光は映像演出です。夏の旅行に合わせた色調で、当日の天候や現在の季節を示すものではありません。</p><p>APIキー・新規有料契約は不要。公開配信に依存するため、速度・継続提供は保証されません。</p><a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">国土地理院の出典・利用条件 ↗</a><a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md" target="_blank" rel="noreferrer">標高データの出典・利用条件 ↗</a></div></details>
+          <details><summary>地図・演出について</summary><div>
+            <p>広域はNASA Blue Marble、接近時は国土地理院の空撮・衛星画像へ滑らかに切り替わります。Mapzenの標高データを1.25倍の起伏で描画しています。建物の3Dモデルではありません。</p>
+            <p>雲・霧・光は映像演出です。夏の旅行に合わせた色調で、当日の天候や現在の季節を示すものではありません。</p>
+            <p>APIキー・新規有料契約は不要。公開配信に依存するため、速度・継続提供は保証されません。</p>
+            <p>We acknowledge the use of imagery provided by services from NASA&apos;s Global Imagery Browse Services (GIBS), part of NASA&apos;s Earth Science Data and Information System (ESDIS).</p>
+            <a href="https://nasa-gibs.github.io/gibs-api-docs/" target="_blank" rel="noreferrer">NASA GIBSの出典・利用条件 ↗</a>
+            <a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noreferrer">国土地理院の出典・利用条件 ↗</a>
+            <a href="https://github.com/tilezen/joerd/blob/master/docs/attribution.md" target="_blank" rel="noreferrer">標高データの出典・利用条件 ↗</a>
+          </div></details>
         </div>
       </div>
       {status === "loading" && <div className="immersive-status" role="status">空の旅を準備しています…</div>}

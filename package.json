@@ -12,7 +12,7 @@
     "prebuild:pages": "node scripts/prepare-map-worker.mjs",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run test:unit && npm run build:pages && npm run test:pages",
-    "test:unit": "node --experimental-strip-types --test tests/immersive-flight.test.mjs tests/japan-flight.test.mjs",
+    "test:unit": "node --experimental-strip-types --test tests/immersive-flight.test.mjs tests/japan-flight.test.mjs tests/map-style.test.mjs",
     "test:pages": "node --test tests/rendered-html.test.mjs",
     "preview:pages": "node scripts/preview-pages.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",

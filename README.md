@@ -31,31 +31,39 @@
 
 飛行計算の確認: `node --experimental-strip-types --test tests/immersive-flight.test.mjs tests/japan-flight.test.mjs`。
 
-### 地図の利用条件・APIキー・コスト（2026-10-20確認）
+### 地図の利用条件・APIキー・コスト（画像レイヤーは2026-10-24再確認）
 
 | 用途 | 採用サービス／ライブラリ | 条件 |
 | --- | --- | --- |
 | 3D地図エンジン | [MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js/blob/main/LICENSE.txt) | BSD-3-Clause、APIキー不要 |
+| 広域の衛星画像 | [NASA GIBS・Blue Marble](https://nasa-gibs.github.io/gibs-api-docs/) | 公開WMTS、キー・ログイン不要。NASA GIBS / ESDISの出典リンクを表示。ネイティブのズームは0〜8 |
 | 空撮・衛星画像 | [国土地理院・全国最新写真](https://maps.gsi.go.jp/development/ichiran.html) | 直接タイルを読み込む方式。出典リンクを地図に表示。[利用規約](https://maps.gsi.go.jp/help/termsofuse.html)に従う |
 | 標高 | [Terrain Tiles / AWS Open Data](https://registry.opendata.aws/terrain-tiles/) | アカウント不要の公開配信。Mapzen、USGS SRTM/GMTED2010、NOAA ETOPO1を表示。[帰属条件](https://github.com/tilezen/joerd/blob/master/docs/attribution.md) |
 
 新しいAPIキー、クレジットカード、有料契約は設定していません。地図SDK自体に従量課金はなく、公開タイルを利用します。ただし外部配信の継続・速度・無制限利用を保証する構成ではありません。既存GitHub Pagesと写真配信の費用・上限は従来どおりです。大量アクセス時は配信元の条件を再確認してから有料サービス等への移行を検討してください。
 
-画像はズームによって撮影年・解像度が異なり、最新の現地状況やリアルタイム映像ではありません。国土地理院画像の出典にはLandsat8 (GSI, TSIC, GEO Grid/AIST, USGS)、GEBCO、NASA/USGS LP DAAC等を含みます。地図右下と「地図・演出について」に出典を表示します。
+広域はNASA Blue Marble、ズーム9〜10.5で国土地理院の写真へ連続的に重ね替えます。広域画像を不透明な下地に残すため、切り替え途中で背景色が透けません。写真が全面表示になるズーム11以降は広域レイヤーを停止します。地形、カメラ、FLIGHT/ATLASの操作は共通です。
 
-閲覧時、ブラウザは地理院・AWSへ表示範囲のタイルを直接要求します。利用者の現在地は取得せず、非公開EXIF・予約情報も送信しません。写真は既存の公開済みデータだけを参照します。
+国土地理院 `seamlessphoto` のズーム2〜8（世界衛星モザイク）には元画像に灰色の三角形があるため使用しません。同院の `lndst` も比較しましたが、日本国外の陸域が白くなるため採用しませんでした。写真ソース自体の最小ズームを9に制限し、遠景用に低解像度タイルが選ばれても問題の画像を取得しない設定です。
+
+画像はズームによって撮影年・解像度が異なり、最新の現地状況やリアルタイム映像ではありません。国土地理院画像の出典にはLandsat8 (GSI, TSIC, GEO Grid/AIST, USGS)、GEBCO、GRUS画像 (© Axelspace) を含みます。地図右下と「地図・演出について」に出典を表示します。
+
+NASA GIBS acknowledgement: We acknowledge the use of imagery provided by services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS).
+
+閲覧時、ブラウザはNASA GIBS・地理院・AWSへ表示範囲のタイルを直接要求します。利用者の現在地は取得せず、非公開EXIF・予約情報も送信しません。写真は既存の公開済みデータだけを参照します。
 
 ### 検証時の注意
 
-GitHub Pagesと同じ出力は `npm run build:pages` で生成します。公開写真の配信は本番ドメイン向けのため、localhostでは写真が準備中になる場合があります。CORS制限を緩めず、公開後にも確認してください。iPhoneサイズのブラウザ検証は実機SafariのGPU・メモリ・タッチ操作を保証しないため、実機確認の有無を別途記録します。
+GitHub Pagesと同じ出力は `npm run build:pages` で生成します。公開写真は既に許可済みの `http://localhost:8082` で確認できます。`127.0.0.1` や別ポートは別のoriginとして扱われるため、写真が準備中になることがあります。CORS制限を緩めたりプロキシで回避せず、下記URLを使用してください。iPhoneサイズのブラウザ検証は実機SafariのGPU・メモリ・タッチ操作を保証しないため、実機確認の有無を別途記録します。
 
 #### 地図処理ファイルとローカル確認
 
 MapLibreのworkerは、Turbopackによる参照先の書き換えを避けるため、公式パッケージから `public/vendor/maplibre-gl-worker.js` へコピーし、地図作成前に明示的に指定しています。`npm run build:pages` の前処理がworkerとライセンスを自動コピーします。直接 `next build` だけを実行せず、このビルド手順を使用してください。生成ファイルはGit管理対象外です。
 
-- `npm test`: 飛行計算8件 → Pages向けビルド → 静的出力5件を確認（公開はしません）。
-- `npm run preview:pages`: ビルド済み出力を `http://127.0.0.1:3120/journey-archive/` で確認。
+- `npm test`: 飛行・地図スタイル10件 → Pages向けビルド → 静的出力5件を確認（公開はしません）。
+- `npm run preview:pages`: ビルド済み出力を `http://localhost:8082/journey-archive/` で確認。ローカル端末だけで接続できます。別ポートは `JOURNEY_PREVIEW_PORT` で指定できますが、写真配信の許可元は変わりません。
 - [2026-10-23の検証記録](docs/flight-validation-2026-10-23.md): 確認済み操作と未確認項目。
+- [2026-10-25の最終検証記録](docs/atlas-validation-2026-10-25.md): 広域画像の欠け対策、航空写真への切り替え、実写真とスマートフォン幅の確認。
 
 「まだ見ぬ景色求めて — Journey Archive」のGitHub Pages版です。
 
