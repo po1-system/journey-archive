@@ -6,11 +6,12 @@ const root = new URL("../out/", import.meta.url);
 const prefix = "/journey-archive/";
 const home = await readFile(new URL("index.html", root), "utf8");
 
-test("Pages export retains the immersive controls and existing archive", () => {
-  for (const text of ["FLIGHT MODE", "ATLAS MODE", "東京", "水戸・大洗", "長野", "FEATURED JOURNEY", 'id="explore"', 'id="map"', 'id="rankings"']) {
+test("lightweight Pages home retains the archive without activating immersive controls", () => {
+  for (const text of ["水戸・大洗", "長野", "FEATURED JOURNEY", 'id="explore"', 'id="map"', 'id="rankings"']) {
     assert.ok(home.includes(text), "Missing home content: " + text);
   }
   assert.ok(!home.includes("Your site is taking shape"));
+  for (const text of ["FLIGHT MODE", "ATLAS MODE", "<canvas"]) assert.ok(!home.includes(text));
 });
 
 test("Pages scripts and styles resolve under the repository subpath", async () => {
@@ -28,11 +29,47 @@ test("standalone worker and license are included, unchanged from the pinned pack
   assert.ok(license.includes("Redistribution"));
 });
 
-test("built client explicitly references the standalone worker (Turbopack URL regression)", async () => {
+test("3D source and worker fix are preserved but excluded from the app's client bundles", async () => {
   const chunks = new URL("_next/static/chunks/", root);
   const js = await Promise.all((await readdir(chunks)).filter(f => f.endsWith(".js")).map(f => readFile(new URL(f, chunks), "utf8")));
   const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
-  assert.ok(js.some(chunk => chunk.includes("/vendor/maplibre-gl-worker.js?v=" + pkg.dependencies["maplibre-gl"])), "Client must bypass MapLibre's import.meta worker discovery");
+  const engine = await readFile(new URL("../app/components/immersive/map-engine.ts", import.meta.url), "utf8");
+  assert.ok(engine.includes("/vendor/maplibre-gl-worker.js?v=" + pkg.dependencies["maplibre-gl"]));
+  for (const marker of ["maplibre-gl-worker", "WebGLRenderer", "gibs.earthdata.nasa.gov", "seamlessphoto"]) assert.ok(!js.some(chunk => chunk.includes(marker)), "Heavy code should not be bundled: " + marker);
+});
+
+test("PWA manifest, Apple metadata and dedicated icons use the GitHub Pages scope", async () => {
+  const manifest = JSON.parse(await readFile(new URL("manifest.webmanifest", root), "utf8"));
+  assert.equal(manifest.display, "standalone"); assert.equal(manifest.start_url, prefix); assert.equal(manifest.scope, prefix);
+  assert.equal(manifest.name, "Journey Archive");
+  const iconSource = await readFile(new URL("icons/journey-archive.svg", root), "utf8");
+  assert.ok(iconSource.includes('id="kja"') && iconSource.includes('id="airplane"'), "Keep the agreed KJA + airplane identity");
+  for (const icon of manifest.icons) {
+    assert.ok(icon.src.startsWith(prefix));
+    const png = await readFile(new URL(icon.src.slice(prefix.length), root));
+    const size = Number(icon.sizes.split("x")[0]); assert.equal(png.readUInt32BE(16), size); assert.equal(png.readUInt32BE(20), size);
+  }
+  assert.ok(home.includes('name="apple-mobile-web-app-capable" content="yes"'));
+  assert.ok(home.includes('rel="apple-touch-icon"')); assert.ok(home.includes("viewport-fit=cover"));
+  const apple = await readFile(new URL("icons/apple-touch-icon.png", root));
+  assert.equal(apple.readUInt32BE(16), 180); assert.equal(apple.readUInt32BE(20), 180);
+  assert.ok(!home.includes("user-scalable=no"));
+});
+
+test("generated service worker precaches only an app shell, with scoped and bounded data", async () => {
+  const sw = await readFile(new URL("sw.js", root), "utf8");
+  const config = JSON.parse(sw.split("\n")[0].slice("self.JOURNEY_PWA = ".length, -1));
+  assert.equal(config.base, prefix.slice(0, -1)); assert.equal(config.pages.length, 11);
+  assert.match(config.version, /^[a-f0-9]{16}$/);
+  let bytes = 0;
+  for (const path of config.core) {
+    assert.ok(path.startsWith(prefix));
+    assert.ok(!/admin|vendor|journeys\/|\/images\//.test(path));
+    bytes += (await readFile(new URL(path === prefix ? "index.html" : path.slice(prefix.length), root))).length;
+  }
+  assert.ok(bytes < 3 * 1024 * 1024);
+  assert.ok(!config.assets.some(path => /vendor|\/images\/|\.mp4|\.jpg|\.webp/.test(path)));
+  assert.ok(home.includes('loading="lazy"'));
 });
 
 test("existing journey detail pages remain in the static export", async () => {

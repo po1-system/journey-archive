@@ -1,9 +1,9 @@
-import Link from "next/link";
+import Link from "./components/archive-link";
 import { getJourney, journeys } from "./data/journeys";
 import { featuredJourneySlug, getJourneyImage, homeHeroImages } from "./data/site-images";
 import ArchiveDashboard from "./components/archive-dashboard";
-import ImmersiveJourney from "./components/immersive/immersive-journey";
-import { journeyRoute } from "./data/home-passage";
+import HeroSlideshow from "./components/hero-slideshow";
+import { InstallGuide } from "./components/pwa-client";
 
 export default function Home() {
   const featuredJourney = getJourney(featuredJourneySlug);
@@ -11,7 +11,7 @@ export default function Home() {
   const activeHeroImages = homeHeroImages.filter((image) => image.src);
   if (!featuredJourney) return null;
   return (
-    <main>
+    <main className="archive-home">
       <header className="site-header">
         <Link href="/" className="brand">Journey Archive</Link>
         <nav aria-label="メインナビゲーション">
@@ -22,22 +22,8 @@ export default function Home() {
         </nav>
       </header>
 
-      <ImmersiveJourney scenes={journeyRoute} />
-
       <section className="hero" aria-label="旅の写真スライドショー">
-        <div className="hero-slides" aria-hidden="true">
-          {activeHeroImages.map((image, index) => (
-            <div
-              className="hero-slide"
-              key={image.src}
-              style={{
-                backgroundImage: `url("${image.src}")`,
-                animationDelay: `${index * 7}s`,
-                animationDuration: `${Math.max(activeHeroImages.length, 1) * 7}s`,
-              }}
-            />
-          ))}
-        </div>
+        <HeroSlideshow images={activeHeroImages} />
         <div className="hero-shade" />
         <div className="hero-content">
           <p className="eyebrow">Personal Travel Journal · Since 2025</p>
@@ -53,7 +39,7 @@ export default function Home() {
           <span className="line" />
           <span>01 — {String(activeHeroImages.length).padStart(2, "0")}</span>
         </div>
-        <a className="scroll-cue" href="#intro" aria-label="旅行一覧へ">Archive</a>
+        <a className="scroll-cue" href="#explore" aria-label="旅行一覧へ">Archive</a>
       </section>
 
       <section className="manifesto section" id="intro">
@@ -92,6 +78,7 @@ export default function Home() {
 
       <footer>
         <p>まだ見ぬ景色求めて — Journey Archive</p>
+        <InstallGuide />
         <p>Tokyo, Japan · 2025 — ∞</p>
       </footer>
     </main>

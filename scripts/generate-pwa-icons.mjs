@@ -1,0 +1,5 @@
+// Deterministic raster exports of our own SVG; no external image service.
+import sharp from "sharp";
+for (const [name, size] of [["apple-touch-icon", 180], ["icon-192", 192], ["icon-512", 512]]) {
+  await sharp("public/icons/journey-archive.svg").resize(size, size).png().toFile(`public/icons/${name}.png`);
+}

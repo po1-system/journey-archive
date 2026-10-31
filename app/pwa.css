@@ -1,0 +1,44 @@
+/* Lightweight app shell. The preserved immersive styles are not activated. */
+.hero-photo-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.035); transition: opacity 1.8s ease, transform 8s linear; }
+.hero-photo-layer[data-active="true"] { opacity: 1; transform: scale(1.035); animation: heroPhotoEnter 1.8s ease both, heroPhotoDrift 8s linear both; }
+.hero-photo-layer[data-initial="true"] { animation: heroPhotoDrift 8s linear both; }
+@keyframes heroPhotoEnter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes heroPhotoDrift { from { transform: scale(1); } to { transform: scale(1.035); } }
+.journey-card-image > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.archive-home .hero h1 { text-wrap: balance; }
+a, button, summary, select { -webkit-tap-highlight-color: rgba(170,149,109,.18); touch-action: manipulation; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
+.site-header { padding-top: max(24px, env(safe-area-inset-top)); padding-left: max(5.5vw, env(safe-area-inset-left)); padding-right: max(5.5vw, env(safe-area-inset-right)); }
+footer { padding-bottom: max(36px, env(safe-area-inset-bottom)); gap: 24px; align-items: start; }
+.install-guide { max-width: 380px; line-height: 1.9; }
+.install-guide summary { cursor: pointer; min-height: 44px; padding: 8px 0; color: var(--ink); }
+.install-guide div { padding: 10px 0; font-size: 13px; letter-spacing: .03em; }
+.install-guide button, .pwa-update button { min-height: 44px; padding: 10px 16px; border: 1px solid var(--line); background: #171714; color: var(--ink); font: inherit; cursor: pointer; }
+.pwa-update { position: fixed; z-index: 100; bottom: max(16px, env(safe-area-inset-bottom)); left: max(16px, env(safe-area-inset-left)); right: 16px; max-width: 480px; padding: 20px; border: 1px solid var(--gold); background: #141412; color: var(--ink); box-shadow: 0 12px 32px #0008; font-size: 14px; }
+.pwa-update p { margin: 0 0 16px; }
+.pwa-update button + button { margin-left: 8px; }
+.pwa-offline { position: fixed; z-index: 100; bottom: 0; width: 100%; padding: 12px 20px max(12px, env(safe-area-inset-bottom)); background: #191915; border-top: 1px solid var(--line); color: var(--ink); font-size: 12px; text-align: center; }
+@media (max-width: 800px) {
+  .archive-home .hero { aspect-ratio: auto; height: 82svh; min-height: 540px; max-height: none; }
+  .archive-home .hero-content { top: auto; bottom: 130px; transform: none; }
+  .archive-home .hero h1 { max-width: 580px; line-height: 1.18; }
+  .archive-home .hero-sub { margin-bottom: 28px; }
+  .archive-home .scroll-cue { writing-mode: horizontal-tb; left: 24px; bottom: 36px; min-height: 44px; display: flex; align-items: center; }
+  .site-header { padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+  .site-header a { min-height: 44px; display: inline-flex; align-items: center; }
+  .filter-bar select, input, textarea { font-size: 16px; }
+  .filter-bar select { min-height: 48px; }
+  .constellation-controls button, .memory-sequence button { min-height: 44px; }
+  .memory-sequence { grid-template-columns: repeat(5, minmax(44px, 1fr)); }
+  .memory-nodes button { width: 44px; height: 44px; }
+  .memory-nodes button i { inset: 17px; }
+  .memory-nodes button:hover i, .memory-nodes button.active i { inset: 14px; }
+  .memory-scrubber input { min-height: 44px; }
+  .memory-nodes button.active::after, .memory-pulse i, .map-scan { animation: none; }
+  .install-guide { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo-layer { transition: none; transform: none; }
+  .hero-photo-layer[data-active="true"] { animation: none; transform: none; }
+  html { scroll-behavior: auto; }
+}

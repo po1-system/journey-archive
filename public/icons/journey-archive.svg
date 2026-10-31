@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">KJA — Journey Archive, airplane</title>
+  <rect width="512" height="512" fill="#0c0c0b"/>
+  <!-- Outlined KJA lettering: identical on all devices without a font dependency. -->
+  <g id="kja" fill="none" stroke="#eeeae2" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M130 232v100m59-100-57 55 60 45"/>
+    <path d="M223 232h53m-13 0v72q0 28-25 28t-25-23"/>
+    <path d="m298 332 38-100 38 100m-62-35h44"/>
+  </g>
+  <!-- A quiet, ascending flight above the monogram. -->
+  <path id="airplane" d="m319 135-26 30-48-9-10 11 42 15-17 21-20-2-7 8 25 11 11 24 8-7-1-20 21-18 15 42 11-10-9-48 30-26q12-12 7-17t-17 7Z" fill="#bda77b" transform="translate(-20 -27)"/>
+  <path d="M218 366h76" stroke="#bda77b" stroke-width="4"/>
+</svg>

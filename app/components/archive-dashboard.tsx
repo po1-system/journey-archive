@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import Link from "./archive-link";
+import { photoSource, photoSrcSet } from "./photo-source";
 import { useMemo, useState } from "react";
 import japanMap from "@svg-maps/japan";
 import type { Journey } from "../data/journeys";
@@ -42,7 +43,6 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
     [journeys],
   );
   const completedJourneys = allJourneys.filter((journey) => journey.status !== "planned");
-  const plannedJourneys = allJourneys.filter((journey) => journey.status === "planned");
   const [year, setYear] = useState("すべて");
   const [prefecture, setPrefecture] = useState("すべて");
   const [activeJourneySlug, setActiveJourneySlug] = useState("mito-oarai");
@@ -82,7 +82,7 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
             <p className="section-index">003 — JOURNEY INDEX</p>
             <h2>旅の記録</h2>
           </div>
-          <p>{filtered.length} journeys · {plannedJourneys.length} upcoming</p>
+          <p>{filtered.length} journeys · {filtered.filter((journey) => journey.status === "planned").length} upcoming</p>
         </div>
         <div className="filter-bar">
           <label>年
@@ -103,8 +103,15 @@ export default function ArchiveDashboard({ journeys }: { journeys: ArchiveJourne
             <Link href={`/journeys/${journey.slug}`} className="journey-card" key={journey.slug}>
               <div
                 className={`journey-card-image${getJourneyImage(journey.slug).src ? "" : " is-placeholder"}`}
-                style={getJourneyImage(journey.slug).src ? { backgroundImage: `url("${getJourneyImage(journey.slug).src}")` } : undefined}
-              />
+              >
+                {getJourneyImage(journey.slug).src && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photoSource(getJourneyImage(journey.slug).src!, 960)}
+                    srcSet={photoSrcSet(getJourneyImage(journey.slug).src!)}
+                    sizes="(max-width: 520px) calc(100vw - 48px), (max-width: 800px) 45vw, 30vw"
+                    alt={getJourneyImage(journey.slug).alt} loading="lazy" decoding="async" />
+                )}
+              </div>
               <div>
                 <span>{journey.status === "planned" ? "UPCOMING · " : ""}{journey.number} · {journey.date}</span>
                 <h3>{journey.prefecture}</h3>

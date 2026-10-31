@@ -16,7 +16,7 @@ createServer(async (req, res) => {
     if (!file.startsWith(`${root}${sep}`) && file !== root) throw Error("Not found");
     if ((await stat(file)).isDirectory()) file = resolve(file, "index.html");
     const body = await readFile(file);
-    res.writeHead(200, { "Content-Type": types[extname(file)] ?? "application/octet-stream", "Cache-Control": "no-store" });
+    res.writeHead(200, { "Content-Type": extname(file) === ".webmanifest" ? "application/manifest+json" : types[extname(file)] ?? "application/octet-stream", "Cache-Control": "no-cache" });
     res.end(req.method === "HEAD" ? undefined : body);
   } catch { res.writeHead(404); res.end("Not found"); }
 }).listen(port, "127.0.0.1", () => console.log(`Preview: http://localhost:${port}/journey-archive/`));

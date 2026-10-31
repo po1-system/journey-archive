@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "../../components/archive-link";
 import JourneyGallery from "../../components/journey-gallery";
 import JourneyHeroImage from "../../components/journey-hero-image";
 import JourneyFoodCollection from "../../components/journey-food-collection";
