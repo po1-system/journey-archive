@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
+import sharp from "sharp";
 
 const root = new URL("../out/", import.meta.url);
 const prefix = "/journey-archive/";
@@ -42,8 +43,8 @@ test("PWA manifest, Apple metadata and dedicated icons use the GitHub Pages scop
   const manifest = JSON.parse(await readFile(new URL("manifest.webmanifest", root), "utf8"));
   assert.equal(manifest.display, "standalone"); assert.equal(manifest.start_url, prefix); assert.equal(manifest.scope, prefix);
   assert.equal(manifest.name, "Journey Archive");
-  const iconSource = await readFile(new URL("icons/journey-archive.svg", root), "utf8");
-  assert.ok(iconSource.includes('id="kja"') && iconSource.includes('id="airplane"'), "Keep the agreed KJA + airplane identity");
+  const iconSource = await readFile(new URL("../assets/pwa/kja-earth.png", import.meta.url));
+  assert.deepEqual(manifest.icons.map(icon => icon.src), ["kja-earth-192.png", "kja-earth-512.png", "kja-earth-maskable-512.png"].map(name => prefix + "icons/" + name));
   for (const icon of manifest.icons) {
     assert.ok(icon.src.startsWith(prefix));
     const png = await readFile(new URL(icon.src.slice(prefix.length), root));
@@ -51,8 +52,13 @@ test("PWA manifest, Apple metadata and dedicated icons use the GitHub Pages scop
   }
   assert.ok(home.includes('name="apple-mobile-web-app-capable" content="yes"'));
   assert.ok(home.includes('rel="apple-touch-icon"')); assert.ok(home.includes("viewport-fit=cover"));
-  const apple = await readFile(new URL("icons/apple-touch-icon.png", root));
+  const apple = await readFile(new URL("icons/kja-earth-180.png", root));
   assert.equal(apple.readUInt32BE(16), 180); assert.equal(apple.readUInt32BE(20), 180);
+  assert.ok(apple.equals(await sharp(iconSource).resize(180, 180).png().toBuffer()), "Apple icon must be the supplied artwork, without cropping");
+  assert.ok(home.includes(prefix + "icons/kja-earth-180.png") && home.includes(prefix + "icons/kja-earth-32.png"));
+  assert.ok(!home.includes("icons/journey-archive.svg") && !home.includes("icons/apple-touch-icon.png"));
+  const maskable = await readFile(new URL("icons/kja-earth-maskable-512.png", root));
+  assert.ok(maskable.equals(await sharp(iconSource).resize(384, 384).extend({ top: 64, bottom: 64, left: 64, right: 64, background: "#050607" }).png().toBuffer()));
   assert.ok(!home.includes("user-scalable=no"));
 });
 
@@ -69,6 +75,7 @@ test("generated service worker precaches only an app shell, with scoped and boun
   }
   assert.ok(bytes < 3 * 1024 * 1024);
   assert.ok(!config.assets.some(path => /vendor|\/images\/|\.mp4|\.jpg|\.webp/.test(path)));
+  assert.ok(!config.assets.some(path => path.includes("assets/pwa/")), "Do not cache the large original icon artwork");
   assert.ok(home.includes('loading="lazy"'));
 });
 

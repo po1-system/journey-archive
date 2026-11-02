@@ -1,17 +1,19 @@
 # Journey Archive
 
-## 現在の構成：軽量PWA（ローカル検証版）
+## 現在の構成：軽量PWA
 
 **FLIGHT / ATLASは一時停止中です。** トップは写真スライドと既存の旅行アーカイブから始まります。MapLibre・Three.js・地形タイルは読み込みません。旅行データ、写真、詳細ページ、編集画面は維持しています。3Dのソース、テスト、出典は削除していません。
 
 ### iPhoneのホーム画面に追加する方法
 
-公開承認・反映後、Safariで `https://po1-system.github.io/journey-archive/` を開きます。
+Safariで `https://po1-system.github.io/journey-archive/` を開きます。
 
 1. Safariの「共有」を開く。
 2. 「ホーム画面に追加」を選ぶ。
 3. 「Webアプリとして開く」が表示される場合はオンにする。
-4. 名前を確認して「追加」。専用の **KJA＋飛行機** アイコンから起動できます。
+4. 名前を確認して「追加」。地球を背景にした **KJA＋飛行機** アイコンから起動できます。
+
+既存のホーム画面アイコンが古いままの場合は、まずSafariでサイトを開き、更新案内があれば「更新して開き直す」を選びます。新しく「ホーム画面に追加」する際のプレビューで新アイコンを確認してください。古いショートカットを削除する場合は、未公開の下書き等を保存してから行ってください。ホーム画面側のアイコン更新はiOSの管理下にあり、自動反映は保証しません。
 
 アプリ名は **Journey Archive**（短縮名 Journey）。スタンドアロンではブラウザのアドレスバーなしで開きます。公開サイトと同じoriginを使用し、写真配信制限を回避するプロキシや許可元の追加は行いません。Safariのバージョンによってメニュー名は異なります。ローカルのブラウザサイズ検証は、iPhone実機でのインストール・操作確認の代わりにはなりません。
 
@@ -36,7 +38,7 @@
 ### 実装ファイルとローカル確認
 
 - `app/manifest.ts`：アプリ名・スコープ・起動URL。
-- `public/icons/journey-archive.svg`：専用アイコン原稿。変更後 `npm run icons:generate` で180/192/512pxのPNGを再生成。
+- `assets/pwa/kja-earth.png`：提供された「煌めく地球と飛翔するモノグラム」の原稿。`npm run icons:generate` で `public/icons/kja-earth-32.png`（ブラウザ）、`kja-earth-180.png`（iPhone）、`kja-earth-192.png` / `kja-earth-512.png`（PWA）を再生成します。色や構図を変えずに縮小し、maskable専用画像だけは切り抜きに備えた余白を付けます。大きな原稿は公開・キャッシュしません。以前のSVG・PNGは互換用に残しますが、現行の設定では参照しません。
 - `app/components/pwa-client.tsx`：起動後登録・更新確認・インストール案内。
 - `scripts/pwa-worker.js`：キャッシュ方針。`npm run build:pages` の後処理が版番号・許可リスト付きの `out/sw.js` とオフライン画面を生成します。`out/` は直接編集しません。
 - `npm test`：既存3Dの回帰テスト＋PWAテスト → Pagesビルド → 静的出力テスト。ローカル処理のみです。

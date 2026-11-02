@@ -14,7 +14,10 @@ export const metadata: Metadata = {
   manifest: `${base}/manifest.webmanifest`,
   appleWebApp: { capable: true, title: "Journey Archive", statusBarStyle: "black-translucent" },
   other: { "apple-mobile-web-app-capable": "yes" },
-  icons: { icon: `${base}/icons/journey-archive.svg`, apple: `${base}/icons/apple-touch-icon.png` },
+  icons: {
+    icon: { url: `${base}/icons/kja-earth-32.png`, sizes: "32x32", type: "image/png" },
+    apple: { url: `${base}/icons/kja-earth-180.png`, sizes: "180x180", type: "image/png" },
+  },
   openGraph: {
     title: "まだ見ぬ景色求めて — Journey Archive",
     description: "一人旅で出会った景色、食、移動、記憶を編む個人のためのデジタル旅行誌。",
